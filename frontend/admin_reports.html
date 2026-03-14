@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics | Admin Panel</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <style>
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+
+        @keyframes pageLoadFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardHoverLift {
+            to {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        body {
+            animation: pageLoadFade 0.6s ease-out;
+        }
+
+        /* ============================================
+           HEADER STYLES
+           ============================================ */
+
+        .admin-header {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .back-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-profile {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-profile:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 18px rgba(255, 152, 0, 0.3);
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* ============================================
+           STAT CARDS SECTION
+           ============================================ */
+
+        .stats-section {
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out 0.1s backwards;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            animation: countUp 0.6s ease-out backwards;
+        }
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.2s;
+            border-top: 4px solid #2e7d32;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.3s;
+            border-top: 4px solid #ff9800;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.4s;
+            border-top: 4px solid #17a2b8;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: rgba(23, 162, 184, 0.1);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+
+        .stat-card:nth-child(2) .stat-value {
+            color: #ff9800;
+        }
+
+        .stat-card:nth-child(3) .stat-value {
+            color: #17a2b8;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           CHARTS SECTION
+           ============================================ */
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff9800;
+            animation: slideInLeft 0.6s ease-out 0.2s backwards;
+        }
+
+        .charts-section {
+            margin-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out 0.3s backwards;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .chart-card:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+
+        .chart-card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .chart-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .chart-card:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-icon {
+            font-size: 20px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 250px;
+        }
+
+        /* ============================================
+           TABLE SECTION
+           ============================================ */
+
+        .table-section {
+            animation: fadeInUp 0.6s ease-out 0.5s backwards;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container thead {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+        }
+
+        .table-container th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            color: #1b5e20;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .table-container td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .table-container tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table-container tbody tr:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .table-container tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+
+        .admin-footer {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-top: 60px;
+            animation: fadeInUp 0.6s ease-out 0.6s backwards;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+
+        @media (max-width: 1024px) {
+            .main-container {
+                padding: 30px 20px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-header {
+                padding: 15px 20px;
+            }
+
+            .header-title {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-title {
+                font-size: 20px;
+                flex: none;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 32px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-canvas {
+                height: 200px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .table-container {
+                padding: 15px;
+            }
+
+            .table-container table {
+                font-size: 12px;
+            }
+
+            .table-container th,
+            .table-container td {
+                padding: 12px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header {
+                padding: 15px 10px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .main-container {
+                padding: 20px 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .section-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            .chart-canvas {
+                height: 150px;
+            }
+
+            .back-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .admin-profile {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================
+     ADMIN HEADER
+     ============================================ -->
+<header class="admin-header">
+    <div class="header-left">
+        <a href="admin_dashboard.html" class="back-btn">← Back</a>
+    </div>
+    <h1 class="header-title">Reports & Analytics</h1>
+    <div class="header-right">
+        <div class="admin-profile">A</div>
+    </div>
+</header>
+
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<div class="main-container">
+
+    <!-- STATS SECTION -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <!-- Total NGOs Card -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-label">Total NGOs</div>
+                    </div>
+                    <div class="stat-icon">🏢</div>
+                </div>
+                <div class="stat-value" id="ngoCount">24</div>
+                <div class="stat-change">↑ 2 from last month</div>
+            </div>
+
+            <!-- Total Donations Card -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-label">Total Donations</div>
+                    </div>
+                    <div class="stat-icon">🎁</div>
+                </div>
+                <div class="stat-value" id="donationCount">1,250</div>
+                <div class="stat-change">↑ 145 from last month</div>
+            </div>
+
+            <!-- Meals Saved Card -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div>
+                        <div class="stat-label">Meals Saved</div>
+                    </div>
+                    <div class="stat-icon">🍽️</div>
+                </div>
+                <div class="stat-value" id="mealCount">18,000</div>
+                <div class="stat-change">↑ 2,500 from last month</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANALYTICS SECTION -->
+    <div class="charts-section">
+        <h2 class="section-title">Donation & Impact Analytics</h2>
+        
+        <div class="charts-grid">
+            <!-- Chart 1: Meals Distributed Over Time -->
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <span class="chart-icon">📈</span>
+                    Meals Distributed Over Time
+                </h3>
+                <div class="chart-canvas">
+                    <canvas id="mealsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Donations by Source -->
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <span class="chart-icon">📊</span>
+                    Donations by Source
+                </h3>
+                <div class="chart-canvas">
+                    <canvas id="sourcesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: NGO Participation -->
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <span class="chart-icon">🥧</span>
+                    NGO Participation
+                </h3>
+                <div class="chart-canvas">
+                    <canvas id="ngoChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Monthly Growth Overview -->
+            <div class="chart-card">
+                <h3 class="chart-title">
+                    <span class="chart-icon">📉</span>
+                    Monthly Growth Overview
+                </h3>
+                <div class="chart-canvas">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="table-section">
+        <h2 class="section-title">Recent Donation Summary</h2>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Donor Type</th>
+                        <th>NGO Assigned</th>
+                        <th>Meals Count</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2026-01-20</td>
+                        <td>Restaurant</td>
+                        <td>Helping Hands Foundation</td>
+                        <td>85 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-19</td>
+                        <td>Individual</td>
+                        <td>Food for All NGO</td>
+                        <td>45 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-18</td>
+                        <td>Corporate Event</td>
+                        <td>Community Kitchen</td>
+                        <td>150 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-17</td>
+                        <td>Restaurant</td>
+                        <td>Unity Foundation</td>
+                        <td>65 meals</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-16</td>
+                        <td>NGO Partner</td>
+                        <td>Hope Initiative</td>
+                        <td>120 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-15</td>
+                        <td>Individual</td>
+                        <td>Nourish Society</td>
+                        <td>30 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-14</td>
+                        <td>Corporate Event</td>
+                        <td>Helping Hands Foundation</td>
+                        <td>200 meals</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-13</td>
+                        <td>Restaurant</td>
+                        <td>Community Kitchen</td>
+                        <td>95 meals</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================
+     ADMIN FOOTER
+     ============================================ -->
+<footer class="admin-footer">
+    © 2026 FEED: Food Equity and Efficient Distribution | Admin Panel
+</footer>
+
+<!-- ============================================
+     CHART.JS SCRIPT
+     ============================================ -->
+<script>
+    // Default Chart.js colors and options
+    const chartColors = {
+        primary: '#2e7d32',
+        accent: '#ff9800',
+        info: '#17a2b8',
+        success: '#28a745',
+        light: '#f0f0f0',
+        border: '#e0e0e0'
+    };
+
+    // ============================================
+    // CHART 1: Meals Distributed Over Time
+    // ============================================
+    const mealsCtx = document.getElementById('mealsChart').getContext('2d');
+    const mealsChart = new Chart(mealsCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Meals Distributed',
+                data: [1200, 1600, 1400, 1800, 2100, 2400, 2200, 2600, 2800, 3000, 3200, 3500],
+                borderColor: chartColors.primary,
+                backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: chartColors.primary,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: { family: "'Poppins', sans-serif", size: 13, weight: '600' },
+                        color: '#333',
+                        padding: 15
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        color: '#f0f0f0',
+                        borderColor: '#e0e0e0'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // ============================================
+    // CHART 2: Donations by Source
+    // ============================================
+    const sourcesCtx = document.getElementById('sourcesChart').getContext('2d');
+    const sourcesChart = new Chart(sourcesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Restaurants', 'Individuals', 'Events', 'NGOs'],
+            datasets: [{
+                label: 'Donations Count',
+                data: [350, 280, 420, 200],
+                backgroundColor: [
+                    chartColors.primary,
+                    chartColors.accent,
+                    chartColors.info,
+                    '#28a745'
+                ],
+                borderRadius: 8,
+                borderSkipped: false,
+                borderColor: 'transparent'
+            }]
+        },
+        options: {
+            indexAxis: 'x',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: { family: "'Poppins', sans-serif", size: 13, weight: '600' },
+                        color: '#333',
+                        padding: 15
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        color: '#f0f0f0',
+                        borderColor: '#e0e0e0'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // ============================================
+    // CHART 3: NGO Participation (Doughnut)
+    // ============================================
+    const ngoCtx = document.getElementById('ngoChart').getContext('2d');
+    const ngoChart = new Chart(ngoCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Helping Hands', 'Food for All', 'Community Kitchen', 'Unity Foundation', 'Others'],
+            datasets: [{
+                data: [28, 22, 18, 16, 16],
+                backgroundColor: [
+                    chartColors.primary,
+                    chartColors.accent,
+                    chartColors.info,
+                    '#28a745',
+                    '#6c757d'
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { family: "'Poppins', sans-serif", size: 12, weight: '600' },
+                        color: '#333',
+                        padding: 12
+                    }
+                }
+            }
+        }
+    });
+
+    // ============================================
+    // CHART 4: Monthly Growth Overview (Area)
+    // ============================================
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+    const growthChart = new Chart(growthCtx, {
+        type: 'area',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            datasets: [
+                {
+                    label: 'Donations',
+                    data: [45, 52, 48, 65, 72, 78, 85, 92],
+                    borderColor: chartColors.primary,
+                    backgroundColor: 'rgba(46, 125, 50, 0.15)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: chartColors.primary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                },
+                {
+                    label: 'Meals Saved',
+                    data: [320, 380, 350, 450, 520, 580, 650, 720],
+                    borderColor: chartColors.accent,
+                    backgroundColor: 'rgba(255, 152, 0, 0.15)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: chartColors.accent,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: { family: "'Poppins', sans-serif", size: 13, weight: '600' },
+                        color: '#333',
+                        padding: 15
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stacked: false,
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        color: '#f0f0f0',
+                        borderColor: '#e0e0e0'
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: { family: "'Poppins', sans-serif", size: 12 },
+                        color: '#999'
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // ============================================
+    // ANIMATED NUMBER COUNTERS
+    // ============================================
+    
+    function animateCounter(elementId, finalValue) {
+        const element = document.getElementById(elementId);
+        const isNumeric = /^\d+/.test(finalValue.toString());
+        
+        if (!isNumeric) {
+            element.textContent = finalValue;
+            return;
+        }
+
+        const numericValue = parseInt(finalValue.toString().replace(/,/g, ''));
+        let currentValue = 0;
+        const increment = Math.ceil(numericValue / 50);
+        const duration = 1000;
+        const steps = 50;
+        const stepDuration = duration / steps;
+
+        const counter = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= numericValue) {
+                currentValue = numericValue;
+                clearInterval(counter);
+            }
+            element.textContent = currentValue.toLocaleString();
+        }, stepDuration);
+    }
+
+    // Trigger counters on page load
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            animateCounter('ngoCount', 24);
+            animateCounter('donationCount', 1250);
+            animateCounter('mealCount', 18000);
+        }, 300);
+    });
+
+    // ============================================
+    // CHART ANIMATION ON SCROLL
+    // ============================================
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.chart-card').forEach(card => {
+        observer.observe(card);
+    });
+</script>
+
+</body>
+</html>

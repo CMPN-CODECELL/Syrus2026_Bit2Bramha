@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Reports | FEED</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-brand span {
+            color: #FF6B35;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            transition: width 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #FF6B35;
+        }
+
+        .header-nav a:hover::after,
+        .header-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-nav a.active {
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .header-logout {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .header-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .header-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .reports-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Report Controls */
+        .report-controls {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .control-select {
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Report Cards */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .report-metric {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .report-chart {
+            height: 200px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        /* Detailed Reports */
+        .detailed-reports {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #FF6B35;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .report-table th {
+            background: rgba(255, 107, 53, 0.1);
+            font-weight: 600;
+            color: #333;
+        }
+
+        .report-table tr:hover {
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-completed {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.1);
+            color: #d97706;
+        }
+
+        .status-accepted {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+        }
+
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        /* Performance Metrics */
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #FF6B35;
+        }
+
+        .metric-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FF6B35;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .metric-change.positive {
+            color: #16a34a;
+        }
+
+        .metric-change.negative {
+            color: #dc2626;
+        }
+
+        /* Export Button */
+        .export-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .export-btn {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+
+            .header-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .report-table {
+                font-size: 0.9rem;
+            }
+
+            .report-table th,
+            .report-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">🍽️</div>
+            <div class="header-brand">Helping Hands<span> Foundation</span></div>
+        </div>
+
+        <div class="header-right">
+            <nav>
+                <ul class="header-nav">
+                    <li><a href="ngo_dashboard.html">Dashboard</a></li>
+                    <li><a href="ngo_donations.html">Donations</a></li>
+                    <li><a href="ngo_volunteers.html">Volunteers</a></li>
+                    <li><a href="ngo_reports.html" class="active">Reports</a></li>
+                    <li><a href="index.html" class="header-logout">Logout</a></li>
+                </ul>
+            </nav>
+            <button class="header-menu-toggle" id="headerMenuToggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="reports-container">
+            <div class="page-header">
+                <h1 class="page-title">Reports & Analytics</h1>
+                <p class="page-subtitle">Comprehensive insights into your NGO's performance and impact</p>
+            </div>
+
+            <!-- Report Controls -->
+            <div class="report-controls">
+                <div class="controls-grid">
+                    <div class="control-group">
+                        <label class="control-label" for="reportType">Report Type</label>
+                        <select id="reportType" class="control-select">
+                            <option value="overview">Overview</option>
+                            <option value="donations">Donations Report</option>
+                            <option value="volunteers">Volunteers Report</option>
+                            <option value="performance">Performance Metrics</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="timeRange">Time Range</label>
+                        <select id="timeRange" class="control-select">
+                            <option value="last7days">Last 7 Days</option>
+                            <option value="last30days">Last 30 Days</option>
+                            <option value="last3months">Last 3 Months</option>
+                            <option value="last6months">Last 6 Months</option>
+                            <option value="lastyear">Last Year</option>
+                            <option value="alltime">All Time</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <button class="generate-btn" onclick="generateReport()">Generate Report</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="reports-grid" id="overviewCards">
+                <!-- Overview cards will be populated by JavaScript -->
+            </div>
+
+            <!-- Detailed Reports -->
+            <div class="detailed-reports" id="detailedReports">
+                <!-- Detailed reports will be populated by JavaScript -->
+            </div>
+
+            <!-- Export Section -->
+            <div class="export-section">
+                <button class="export-btn" onclick="exportReport()">📊 Export Report</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="ngo_data.js"></script>
+    <script>
+        let currentReportType = 'overview';
+        let currentTimeRange = 'last30days';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            generateReport();
+
+            // Update controls
+            document.getElementById('reportType').addEventListener('change', function() {
+                currentReportType = this.value;
+                generateReport();
+            });
+
+            document.getElementById('timeRange').addEventListener('change', function() {
+                currentTimeRange = this.value;
+                generateReport();
+            });
+        });
+
+        function generateReport() {
+            loadOverviewCards();
+            loadDetailedReports();
+        }
+
+        function loadOverviewCards() {
+            const overviewCards = document.getElementById('overviewCards');
+            const data = ngoDataManager.getData();
+
+            const cards = [
+                {
+                    icon: '📦',
+                    title: 'Total Donations',
+                    metric: data.donations.totalReceived,
+                    subtitle: 'Food donations received',
+                    color: '#FF6B35'
+                },
+                {
+                    icon: '✅',
+                    title: 'Completed',
+                    metric: data.donations.completed,
+                    subtitle: 'Successfully distributed',
+                    color: '#22c55e'
+                },
+                {
+                    icon: '👥',
+                    title: 'Active Volunteers',
+                    metric: data.volunteers.active,
+                    subtitle: 'Currently helping',
+                    color: '#3b82f6'
+                },
+                {
+                    icon: '🍽️',
+                    title: 'Meals Distributed',
+                    metric: data.reports.performance.totalMealsDistributed,
+                    subtitle: 'People fed',
+                    color: '#f59e0b'
+                },
+                {
+                    icon: '⏱️',
+                    title: 'Avg Response Time',
+                    metric: data.reports.performance.avgResponseTime || '2.5h',
+                    subtitle: 'Time to accept donations',
+                    color: '#8b5cf6'
+                },
+                {
+                    icon: '📈',
+                    title: 'Success Rate',
+                    metric: data.reports.performance.successRate ? data.reports.performance.successRate + '%' : '94%',
+                    subtitle: 'Donation completion rate',
+                    color: '#10b981'
+                }
+            ];
+
+            overviewCards.innerHTML = cards.map(card => `
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="report-icon" style="background: rgba(${hexToRgb(card.color)}, 0.1); color: ${card.color};">
+                            ${card.icon}
+                        </div>
+                        <h3 class="report-title">${card.title}</h3>
+                    </div>
+                    <div class="report-metric">${card.metric}</div>
+                    <div class="report-subtitle">${card.subtitle}</div>
+                    <div class="report-chart">
+                        📊 Chart visualization
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadDetailedReports() {
+            const detailedReports = document.getElementById('detailedReports');
+            const data = ngoDataManager.getData();
+
+            let content = '';
+
+            switch (currentReportType) {
+                case 'overview':
+                    content = generateOverviewReport(data);
+                    break;
+                case 'donations':
+                    content = generateDonationsReport(data);
+                    break;
+                case 'volunteers':
+                    content = generateVolunteersReport(data);
+                    break;
+                case 'performance':
+                    content = generatePerformanceReport(data);
+                    break;
+            }
+
+            detailedReports.innerHTML = content;
+        }
+
+        function generateOverviewReport(data) {
+            const recentDonations = ngoDataManager.getRecentDonations(5);
+
+            return `
+                <h3 class="section-title">Recent Activity Summary</h3>
+                <div class="performance-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Donations This Month</div>
+                        <div class="metric-value">${data.donations.totalReceived}</div>
+                        <div class="metric-change positive">+12% from last month</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Volunteer Engagement</div>
+                        <div class="metric-value">${data.volunteers.active}/${data.volunteers.total}</div>
+                        <div class="metric-change positive">+8% active rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Completion Rate</div>
+                        <div class="metric-value">${data.donations.totalReceived > 0 ? Math.round((data.donations.completed / data.donations.totalReceived) * 100) : 0}%</div>
+                        <div class="metric-change positive">+5% improvement</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Avg Meals per Donation</div>
+                        <div class="metric-value">${data.donations.totalReceived > 0 ? Math.round(data.reports.performance.totalMealsDistributed / data.donations.totalReceived) : 0}</div>
+                        <div class="metric-change">Consistent</div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Recent Donations</h3>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Donor</th>
+                            <th>Food Type</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${recentDonations.map(donation => `
+                            <tr>
+                                <td>${donation.donorName}</td>
+                                <td>${donation.foodType}</td>
+                                <td>${donation.quantity} servings</td>
+                                <td><span class="status-badge status-${donation.status}">${donation.status}</span></td>
+                                <td>${formatDate(donation.timestamp)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function generateDonationsReport(data) {
+            const allDonations = data.donations.history;
+
+            return `
+                <h3 class="section-title">Donations Report</h3>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Donor</th>
+                            <th>Food Type</th>
+                            <th>Quantity</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${allDonations.map(donation => `
+                            <tr>
+                                <td>${donation.donorName}</td>
+                                <td>${donation.foodType}</td>
+                                <td>${donation.quantity} servings</td>
+                                <td>${donation.location}</td>
+                                <td><span class="status-badge status-${donation.status}">${donation.status}</span></td>
+                                <td>${formatDate(donation.timestamp)}</td>
+                                <td>${donation.completedAt ? formatDate(donation.completedAt) : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function generateVolunteersReport(data) {
+            return `
+                <h3 class="section-title">Volunteers Report</h3>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Joined Date</th>
+                            <th>Skills</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.volunteers.list.map(volunteer => `
+                            <tr>
+                                <td>${volunteer.name}</td>
+                                <td>${volunteer.email}</td>
+                                <td>${volunteer.phone}</td>
+                                <td><span class="status-badge status-${volunteer.status}">${volunteer.status}</span></td>
+                                <td>${formatDate(volunteer.joinedAt)}</td>
+                                <td>${volunteer.skills.join(', ')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function generatePerformanceReport(data) {
+            return `
+                <h3 class="section-title">Performance Metrics</h3>
+                <div class="performance-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Total Donations Received</div>
+                        <div class="metric-value">${data.donations.totalReceived}</div>
+                        <div class="metric-change">All time</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Donations Completed</div>
+                        <div class="metric-value">${data.donations.completed}</div>
+                        <div class="metric-change positive">${data.donations.totalReceived > 0 ? Math.round((data.donations.completed / data.donations.totalReceived) * 100) : 0}% success rate</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Total Volunteers</div>
+                        <div class="metric-value">${data.volunteers.total}</div>
+                        <div class="metric-change">${data.volunteers.active} active</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Meals Distributed</div>
+                        <div class="metric-value">${data.reports.performance.totalMealsDistributed}</div>
+                        <div class="metric-change">Total impact</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Pending Donations</div>
+                        <div class="metric-value">${data.donations.pending}</div>
+                        <div class="metric-change">Requires attention</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Rejected Donations</div>
+                        <div class="metric-value">${data.donations.rejected}</div>
+                        <div class="metric-change">Could not accept</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportReport() {
+            // Simple export functionality - in a real app, this would generate a PDF or CSV
+            alert('Report exported successfully! (This is a demo - in a real application, this would download a PDF or CSV file)');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 107, 53';
+        }
+    </script>
+</body>
+</html>

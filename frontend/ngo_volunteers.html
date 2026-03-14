@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Volunteers | FEED</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-brand span {
+            color: #FF6B35;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            transition: width 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #FF6B35;
+        }
+
+        .header-nav a:hover::after,
+        .header-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-nav a.active {
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .header-logout {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .header-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .header-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .volunteers-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Add Volunteer Button */
+        .add-volunteer-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .add-volunteer-btn {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .add-volunteer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-height: 80px;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Volunteers Grid */
+        .volunteers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .volunteer-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .volunteer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .volunteer-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .volunteer-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .volunteer-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .volunteer-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .status-inactive {
+            background: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+        }
+
+        .volunteer-details {
+            margin-bottom: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .volunteer-skills {
+            margin-bottom: 1rem;
+        }
+
+        .skills-title {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: rgba(255, 107, 53, 0.1);
+            color: #FF6B35;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .volunteer-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-activate {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .btn-deactivate {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+
+            .header-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .volunteers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">🍽️</div>
+            <div class="header-brand">Helping Hands<span> Foundation</span></div>
+        </div>
+
+        <div class="header-right">
+            <nav>
+                <ul class="header-nav">
+                    <li><a href="ngo_dashboard.html">Dashboard</a></li>
+                    <li><a href="ngo_donations.html">Donations</a></li>
+                    <li><a href="ngo_volunteers.html" class="active">Volunteers</a></li>
+                    <li><a href="ngo_reports.html">Reports</a></li>
+                    <li><a href="index.html" class="header-logout">Logout</a></li>
+                </ul>
+            </nav>
+            <button class="header-menu-toggle" id="headerMenuToggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="volunteers-container">
+            <div class="page-header">
+                <h1 class="page-title">Volunteer Management</h1>
+                <p class="page-subtitle">Manage your volunteer team and their activities</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview" id="statsOverview">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <!-- Add Volunteer Button -->
+            <div class="add-volunteer-section">
+                <button class="add-volunteer-btn" onclick="openAddVolunteerModal()">+ Add New Volunteer</button>
+            </div>
+
+            <!-- Volunteers Grid -->
+            <div class="volunteers-grid" id="volunteersGrid">
+                <!-- Volunteers will be populated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Volunteer Modal -->
+    <div id="addVolunteerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Volunteer</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <form id="addVolunteerForm">
+                <div class="form-group">
+                    <label class="form-label" for="volunteerName">Full Name</label>
+                    <input type="text" id="volunteerName" name="name" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="volunteerEmail">Email</label>
+                    <input type="email" id="volunteerEmail" name="email" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="volunteerPhone">Phone</label>
+                    <input type="tel" id="volunteerPhone" name="phone" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="volunteerSkills">Skills (comma-separated)</label>
+                    <input type="text" id="volunteerSkills" name="skills" class="form-input" placeholder="e.g., Food Distribution, Community Outreach, Logistics" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Volunteer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="ngo_data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatsOverview();
+            loadVolunteers();
+
+            // Handle form submission
+            document.getElementById('addVolunteerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewVolunteer();
+            });
+        });
+
+        function loadStatsOverview() {
+            const data = ngoDataManager.getData();
+            const statsOverview = document.getElementById('statsOverview');
+
+            const stats = [
+                { number: data.volunteers.total, label: 'Total Volunteers' },
+                { number: data.volunteers.active, label: 'Active' },
+                { number: data.volunteers.inactive, label: 'Inactive' }
+            ];
+
+            statsOverview.innerHTML = stats.map(stat => `
+                <div class="stat-box">
+                    <span class="stat-number">${stat.number}</span>
+                    <span class="stat-label">${stat.label}</span>
+                </div>
+            `).join('');
+        }
+
+        function loadVolunteers() {
+            const volunteersGrid = document.getElementById('volunteersGrid');
+            const data = ngoDataManager.getData();
+
+            if (data.volunteers.list.length === 0) {
+                volunteersGrid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No volunteers yet</h3>
+                        <p>Start building your volunteer team by adding new members.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            volunteersGrid.innerHTML = data.volunteers.list.map(volunteer => `
+                <div class="volunteer-card">
+                    <div class="volunteer-header">
+                        <div class="volunteer-avatar">
+                            ${volunteer.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </div>
+                        <div class="volunteer-info">
+                            <h3>${volunteer.name}</h3>
+                            <span class="volunteer-status status-${volunteer.status}">${volunteer.status}</span>
+                        </div>
+                    </div>
+
+                    <div class="volunteer-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Email:</span>
+                            <span class="detail-value">${volunteer.email}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">${volunteer.phone}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Joined:</span>
+                            <span class="detail-value">${formatDate(volunteer.joinedAt)}</span>
+                        </div>
+                    </div>
+
+                    <div class="volunteer-skills">
+                        <div class="skills-title">Skills</div>
+                        <div class="skills-list">
+                            ${volunteer.skills.map(skill => `<span class="skill-tag">${skill.trim()}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="volunteer-actions">
+                        ${volunteer.status === 'active' ?
+                            `<button class="btn-small btn-deactivate" onclick="updateVolunteerStatus('${volunteer.id}', 'inactive')">Deactivate</button>` :
+                            `<button class="btn-small btn-activate" onclick="updateVolunteerStatus('${volunteer.id}', 'active')">Activate</button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAddVolunteerModal() {
+            document.getElementById('addVolunteerModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('addVolunteerModal').style.display = 'none';
+            document.getElementById('addVolunteerForm').reset();
+        }
+
+        function addNewVolunteer() {
+            const formData = new FormData(document.getElementById('addVolunteerForm'));
+            const volunteer = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                skills: formData.get('skills').split(',').map(skill => skill.trim())
+            };
+
+            if (ngoDataManager.addVolunteer(volunteer)) {
+                closeModal();
+                loadStatsOverview();
+                loadVolunteers();
+                alert('Volunteer added successfully!');
+            } else {
+                alert('Failed to add volunteer. Please try again.');
+            }
+        }
+
+        function updateVolunteerStatus(volunteerId, status) {
+            if (ngoDataManager.updateVolunteerStatus(volunteerId, status)) {
+                loadStatsOverview();
+                loadVolunteers();
+                alert(`Volunteer ${status === 'active' ? 'activated' : 'deactivated'} successfully!`);
+            } else {
+                alert('Failed to update volunteer status.');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addVolunteerModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

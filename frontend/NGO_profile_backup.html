@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard | FEED</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           ANIMATION KEYFRAMES
+           ============================================ */
+
+        /* Page load fade-in animation */
+        @keyframes fadeInPage {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Main content slide-in from bottom */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card staggered animation */
+        @keyframes fadeUpStagger {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card hover scale animation */
+        @keyframes cardHoverLift {
+            to {
+                transform: translateY(-8px);
+                box-shadow: 0 35px 80px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* Button ripple effect */
+        @keyframes buttonRipple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(255, 152, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0);
+            }
+        }
+
+        /* Button glow effect */
+        @keyframes buttonGlow {
+            0%, 100% {
+                box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+        /* Alert slide-in animation */
+        @keyframes slideInAlert {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Alert pulse animation for warnings */
+        @keyframes alertPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        /* Progress bar fill animation */
+        @keyframes progressFill {
+            from {
+                width: 0%;
+            }
+            to {
+                width: var(--progress-value, 75%);
+            }
+        }
+
+        /* Section heading fade and underline */
+        @keyframes headingFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Subtle scale animation on card hover */
+        @keyframes scaleUp {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.02);
+            }
+        }
+
+        /* ============================================
+           GLOBAL STYLES & BASE ANIMATIONS
+           ============================================ */
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            animation: fadeInPage 0.6s ease-in-out;
+        }
+
+        /* Respect prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Background Video */
+        .video-bg {
+            position: fixed;
+            inset: 0;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(232, 245, 233, 0.85);
+            z-index: -1;
+        }
+
+        /* ============================================
+           HAMBURGER BUTTON ANIMATIONS
+           ============================================ */
+
+        .hamburger-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1050;
+            background: linear-gradient(45deg, #2e7d32, #1b5e20);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            will-change: transform, box-shadow, background;
+        }
+
+        .hamburger-btn:hover {
+            background: linear-gradient(45deg, #1b5e20, #0d3820);
+            transform: scale(1.08);
+            box-shadow: 0 8px 24px rgba(46, 125, 50, 0.4);
+        }
+
+        .hamburger-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ============================================
+           SIDEBAR ANIMATIONS
+           ============================================ */
+
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 1040;
+            transition: background 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .sidebar-backdrop.active {
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background: linear-gradient(180deg, #e8f5e9, #ffffff);
+            padding: 25px;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1045;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+            box-shadow: 8px 0 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar h4 {
+            color: #2e7d32;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 25px;
+            animation: headingFadeIn 0.5s ease-in-out 0.1s both;
+        }
+
+        .sidebar h4:first-child {
+            margin-top: 0;
+            animation-delay: 0s;
+        }
+
+        /* Close button inside sidebar */
+        .sidebar-close-btn {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #2e7d32;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-close-btn:hover {
+            color: #ff9800;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* ============================================
+           NAVIGATION LINK ANIMATIONS
+           ============================================ */
+
+        .nav-link {
+            color: #2e7d32;
+            font-weight: 500;
+            margin: 8px 0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            display: block;
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            background: none;
+            will-change: background, transform;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover glow effect */
+        .nav-link:hover {
+            background: #fff9c4;
+            transform: translateX(8px);
+            box-shadow: -4px 0 12px rgba(46, 125, 50, 0.15);
+        }
+
+        .nav-link.active,
+        .nav-link:focus {
+            background: linear-gradient(90deg, #ff9800, #fb8c00);
+            color: #fff;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .nav-link.logout {
+            color: #d32f2f;
+            margin-top: 30px;
+        }
+
+        .nav-link.logout:hover {
+            background: #ffebee;
+            color: #b71c1c;
+            box-shadow: -4px 0 12px rgba(211, 47, 47, 0.15);
+        }
+
+        /* ============================================
+           CONTENT & CARD ANIMATIONS
+           ============================================ */
+
+        .content {
+            padding: 40px 30px;
+            height: 100vh;
+            overflow-y: auto;
+            margin-left: 0;
+            transition: margin-left 0.3s ease-in-out;
+            padding-top: 100px;
+            animation: slideInUp 0.7s ease-in-out;
+        }
+
+        .card-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+            animation: fadeUpStagger 0.6s ease-in-out both;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Staggered animation for multiple cards */
+        .tab-pane:nth-child(1) .card-box {
+            animation-delay: 0.1s;
+        }
+
+        .tab-pane:nth-child(2) .card-box {
+            animation-delay: 0.2s;
+        }
+
+        .tab-pane:nth-child(3) .card-box {
+            animation-delay: 0.3s;
+        }
+
+        /* Card hover lift effect */
+        .card-box:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ============================================
+           TEXT & HEADING ANIMATIONS
+           ============================================ */
+
+        .title {
+            color: #2e7d32;
+            font-weight: 600;
+            animation: headingFadeIn 0.5s ease-in-out;
+        }
+
+        .section-title {
+            color: #ff9800;
+            font-weight: 500;
+            margin-bottom: 15px;
+            animation: headingFadeIn 0.5s ease-in-out;
+            transition: all 0.3s ease;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: #ff9800;
+            margin-top: 8px;
+            animation: slideInUp 0.6s ease-in-out 0.2s forwards;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #555;
+            animation: fadeInPage 0.4s ease-in-out;
+        }
+
+        /* ============================================
+           BUTTON ANIMATIONS
+           ============================================ */
+
+        .btn {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
+            position: relative;
+        }
+
+        .btn-orange {
+            background: linear-gradient(45deg, #ff9800, #fb8c00);
+            color: white;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.25);
+        }
+
+        .btn-orange:hover {
+            box-shadow: 0 12px 30px rgba(255, 152, 0, 0.4);
+            transform: translateY(-3px);
+            background: linear-gradient(45deg, #fb8c00, #ff9800);
+        }
+
+        .btn-orange:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-success {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-danger {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-warning {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-warning:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-info {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-info:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* ============================================
+           ALERT & NOTIFICATION ANIMATIONS
+           ============================================ */
+
+        .list-group-item {
+            animation: slideInAlert 0.5s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .list-group-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .list-group-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(255, 152, 0, 0.05);
+            transform: translateX(4px);
+        }
+
+        .list-group-item-warning {
+            animation: alertPulse 3s ease-in-out infinite;
+        }
+
+        /* ============================================
+           PROGRESS BAR ANIMATIONS
+           ============================================ */
+
+        .progress-bar {
+            animation: progressFill 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: width 0.4s ease;
+            will-change: width;
+        }
+
+        .progress-bar:first-of-type {
+            animation-delay: 0.2s;
+        }
+
+        .progress-bar:nth-of-type(2) {
+            animation-delay: 0.4s;
+        }
+
+        .progress-bar:nth-of-type(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* ============================================
+           FORM ELEMENTS ANIMATIONS
+           ============================================ */
+
+        textarea, select {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            animation: slideInAlert 0.5s ease-out;
+        }
+
+        textarea:focus, select:focus {
+            transform: scale(1.01);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        /* ============================================
+           RESPONSIVE ANIMATIONS
+           ============================================ */
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content {
+                padding: 30px 20px;
+                padding-top: 100px;
+            }
+
+            .card-box {
+                padding: 20px;
+            }
+
+            .hamburger-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .sidebar {
+                width: 250px;
+            }
+
+            .sidebar-close-btn {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content {
+                padding: 20px 15px;
+                padding-top: 100px;
+            }
+
+            .card-box {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .hamburger-btn {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .sidebar {
+                width: 240px;
+                padding: 20px;
+            }
+
+            .sidebar h4 {
+                font-size: 18px;
+                margin-top: 25px;
+                margin-bottom: 20px;
+            }
+
+            .nav-link {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            /* Ensure content doesn't get cut off on small screens */
+            .row {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Scrollbar styling for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #2e7d32;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background Video -->
+<video autoplay muted loop class="video-bg">
+    <source src="https://cdn.coverr.co/videos/coverr-community-kitchen-7744/1080p.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- Hamburger Menu Button -->
+<button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu" title="Open menu">
+    ☰
+</button>
+
+<!-- Sidebar Backdrop (click to close) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+    <!-- Close button for mobile -->
+    <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu" title="Close menu">
+        ✕
+    </button>
+
+    <h4 class="mb-4">NGO Panel</h4>
+    <ul class="nav flex-column nav-pills" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#dashboard">Dashboard</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#profile">NGO Profile</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#capacity">Capacity & Volunteers</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#query">Raise Query</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#requests">Donation Requests</button>
+        </li>
+        <li class="nav-item mt-4">
+            <a href="index.html" class="nav-link logout">Logout</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="content" id="mainContent">
+            <div class="tab-content">
+
+                <!-- Dashboard -->
+                <div class="tab-pane fade show active" id="dashboard">
+                    <div class="card-box">
+                        <h3 class="title">Welcome, Helping Hands Foundation</h3>
+                        <p class="mt-3">
+                            This dashboard allows you to manage your NGO profile, update food capacity,
+                            track volunteers, and raise issues directly to the admin.
+                        </p>
+
+                        <!-- Overview Statistics Cards -->
+                        <h5 class="section-title mt-4">Overview Statistics</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <div class="card text-center shadow-sm">
+                                    <div class="card-body">
+                                        <h4 class="text-success">1,250</h4>
+                                        <p class="mb-0">Meals Distributed</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center shadow-sm">
+                                    <div class="card-body">
+                                        <h4 class="text-primary">15</h4>
+                                        <p class="mb-0">Active Donors</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center shadow-sm">
+                                    <div class="card-body">
+                                        <h4 class="text-warning">3</h4>
+                                        <p class="mb-0">Pending Donations</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card text-center shadow-sm">
+                                    <div class="card-body">
+                                        <h4 class="text-info">25</h4>
+                                        <p class="mb-0">Available Volunteers</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Action Buttons -->
+                        <h5 class="section-title">Quick Actions</h5>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            <a href="update_capacity.html" class="btn btn-orange" style="text-decoration: none;">Update Capacity</a>
+                            <a href="view_donations.html" class="btn btn-success" style="text-decoration: none;">View Donations</a>
+                            <a href="raise_query.html" class="btn btn-warning" style="text-decoration: none;">Raise Query</a>
+                            <a href="contact_admin.html" class="btn btn-info" style="text-decoration: none;">Contact Admin</a>
+                        </div>
+
+                        <!-- Recent Activities/Notifications Feed -->
+                        <h5 class="section-title">Recent Activities</h5>
+                        <div class="list-group mb-4">
+                            <div class="list-group-item">
+                                <strong>New Donation:</strong> 50 meals from XYZ Restaurant scheduled for tomorrow.
+                            </div>
+                            <div class="list-group-item">
+                                <strong>Admin Update:</strong> Your capacity update has been approved.
+                            </div>
+                            <div class="list-group-item list-group-item-warning">
+                                <strong>Alert:</strong> Food shortage alert: Only 50 meals available.
+                            </div>
+                        </div>
+
+                        <!-- Performance Insights -->
+                        <h5 class="section-title">Performance Insights</h5>
+                        <div class="mb-3">
+                            <label>Monthly Meal Target Progress</label>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: 75%">75%</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label>Donor Engagement Score</label>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" style="width: 85%">85%</div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming Schedules/Reminders -->
+                        <h5 class="section-title">Upcoming Schedules</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item">Food Pickup: XYZ Restaurant - Tomorrow, 10 AM</li>
+                            <li class="list-group-item">Volunteer Shift: 5 volunteers needed - Friday, 2 PM</li>
+                            <li class="list-group-item">Capacity Update Deadline: End of month</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div class="tab-pane fade" id="profile">
+                    <div class="card-box">
+                        <h5 class="section-title">NGO Profile Details</h5>
+                        <p><span class="info-label">Registration No:</span> NGO-IND-45892</p>
+                        <p><span class="info-label">Contact Person:</span> Rahul Patil</p>
+                        <p><span class="info-label">Phone:</span> +91 9876543210</p>
+                        <p><span class="info-label">Email:</span> contact@helpinghands.org</p>
+                        <p><span class="info-label">Service Area:</span> Pune District</p>
+                    </div>
+                </div>
+
+                <!-- Capacity -->
+                <div class="tab-pane fade" id="capacity">
+                    <div class="card-box">
+                        <h5 class="section-title">Food & Volunteer Capacity</h5>
+                        <p><span class="info-label">Daily Food Capacity:</span> 100–300 meals</p>
+                        <p><span class="info-label">Available Volunteers:</span> 25</p>
+                        <p><span class="info-label">Vehicle Support:</span> Yes</p>
+                    </div>
+                </div>
+
+                <!-- Query -->
+                <div class="tab-pane fade" id="query">
+                    <div class="card-box">
+                        <h5 class="section-title">Raise an Issue</h5>
+                        <form onsubmit="submitQuery(event)">
+                            <div class="mb-3">
+                                <label class="form-label">Issue Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select</option>
+                                    <option>Donation Issue</option>
+                                    <option>Verification Issue</option>
+                                    <option>Technical Issue</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Issue Description</label>
+                                <textarea class="form-control" rows="4" required></textarea>
+                            </div>
+
+                            <button class="btn btn-orange w-100">Send to Admin</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Donation Requests -->
+                <div class="tab-pane fade" id="requests">
+                    <div class="card-box">
+                        <h5 class="section-title">Donation Requests from Donors</h5>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Request from: XYZ Restaurant</strong><br>
+                                    <small>Submitted: 2 hours ago</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(1)">Accept</button>
+                                    <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(1)">Reject</button>
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal" onclick="loadRequestDetails(1)">Review</button>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Request from: ABC Hotel</strong><br>
+                                    <small>Submitted: 5 hours ago</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(2)">Accept</button>
+                                    <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(2)">Reject</button>
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal" onclick="loadRequestDetails(2)">Review</button>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Request from: Food Bank</strong><br>
+                                    <small>Submitted: 1 day ago</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(3)">Accept</button>
+                                    <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(3)">Reject</button>
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal" onclick="loadRequestDetails(3)">Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Donation Request Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Donor:</strong> <span id="modalDonor"></span></p>
+                <p><strong>Type of Meal:</strong> <span id="modalMealType"></span></p>
+                <p><strong>Quantity:</strong> <span id="modalQuantity"></span></p>
+                <p><strong>Expected Expiry Date:</strong> <span id="modalExpiry"></span></p>
+                <p><strong>Additional Notes:</strong> <span id="modalNotes"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ============================================
+    // COLLAPSIBLE SIDEBAR FUNCTIONALITY
+    // ============================================
+
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const mainContent = document.getElementById('mainContent');
+
+    /**
+     * Toggle sidebar open/closed state
+     */
+    function toggleSidebar() {
+        sidebar.classList.toggle('active');
+        sidebarBackdrop.classList.toggle('active');
+    }
+
+    /**
+     * Close sidebar
+     */
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        sidebarBackdrop.classList.remove('active');
+    }
+
+    /**
+     * Check if viewport is mobile/tablet (max 768px)
+     */
+    function isMobileView() {
+        return window.innerWidth <= 768;
+    }
+
+    // Open/close sidebar when hamburger button is clicked
+    hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSidebar();
+    });
+
+    // Close sidebar when close button is clicked (mobile)
+    sidebarCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeSidebar();
+    });
+
+    // Close sidebar when backdrop is clicked
+    sidebarBackdrop.addEventListener('click', () => {
+        closeSidebar();
+    });
+
+    // Close sidebar when clicking on main content area (mobile only)
+    mainContent.addEventListener('click', () => {
+        if (isMobileView() && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // Close sidebar when a menu item is clicked
+    const navLinks = document.querySelectorAll('.sidebar .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Auto-close sidebar on all screen sizes after navigation
+            closeSidebar();
+        });
+    });
+
+    // Close sidebar when window is resized to desktop view
+    window.addEventListener('resize', () => {
+        if (!isMobileView() && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // Prevent sidebar from closing when clicking inside it
+    sidebar.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close sidebar when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // ============================================
+    // EXISTING FUNCTIONALITY
+    // ============================================
+
+    /**
+     * Handle query form submission
+     */
+    function submitQuery(e) {
+        e.preventDefault();
+        alert("Your issue has been successfully sent to the Admin.");
+    }
+
+    /**
+     * Accept a donation request
+     */
+    function acceptRequest(id) {
+        alert("Request " + id + " has been accepted.");
+        // Here you can add logic to update the request status
+    }
+
+    /**
+     * Reject a donation request
+     */
+    function rejectRequest(id) {
+        alert("Request " + id + " has been rejected.");
+        // Here you can add logic to update the request status
+    }
+
+    /**
+     * Load donation request details into modal
+     */
+    function loadRequestDetails(id) {
+        // Placeholder data for demonstration
+        const requests = {
+            1: { donor: "XYZ Restaurant", mealType: "Vegetarian Meals", quantity: "50 meals", expiry: "2026-01-16", notes: "Freshly prepared, ready for pickup." },
+            2: { donor: "ABC Hotel", mealType: "Non-Vegetarian Meals", quantity: "30 meals", expiry: "2026-01-17", notes: "Includes chicken and fish dishes." },
+            3: { donor: "Food Bank", mealType: "Mixed Meals", quantity: "100 meals", expiry: "2026-01-18", notes: "Assorted leftovers from events." }
+        };
+        const req = requests[id];
+        document.getElementById('modalDonor').textContent = req.donor;
+        document.getElementById('modalMealType').textContent = req.mealType;
+        document.getElementById('modalQuantity').textContent = req.quantity;
+        document.getElementById('modalExpiry').textContent = req.expiry;
+        document.getElementById('modalNotes').textContent = req.notes;
+    }
+</script>
+
+</body>
+</html>

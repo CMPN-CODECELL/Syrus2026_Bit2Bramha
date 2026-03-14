@@ -1,0 +1,1996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Queries Management | Admin Panel</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+
+        @keyframes pageLoadFade {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInToast {
+            from {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutToast {
+            to {
+                opacity: 0;
+                transform: translateX(400px);
+            }
+        }
+
+        @keyframes countUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        body {
+            animation: pageLoadFade 0.6s ease-out;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+        }
+
+        /* ============================================
+           HEADER STYLES
+           ============================================ */
+
+        .admin-header {
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        body.dark-mode .admin-header {
+            background: #0f3460;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1b5e20;
+            flex: 1;
+            text-align: center;
+        }
+
+        body.dark-mode .header-title {
+            color: #81c784;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .header-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .header-icon-btn {
+            background: #1a3a52;
+            color: #81c784;
+        }
+
+        .header-icon-btn:hover {
+            background: #2e7d32;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .admin-profile {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .admin-profile:hover {
+            transform: scale(1.08);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: none;
+            z-index: 101;
+            min-width: 160px;
+        }
+
+        body.dark-mode .profile-menu {
+            background: #0f3460;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-menu.active {
+            display: block;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        body.dark-mode .profile-menu a {
+            color: #e0e0e0;
+            border-bottom-color: #1a3a52;
+        }
+
+        .profile-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .profile-menu a:hover {
+            background: #f5f5f5;
+            padding-left: 20px;
+        }
+
+        body.dark-mode .profile-menu a:hover {
+            background: #1a3a52;
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+
+        .main-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        /* ============================================
+           STATS CARDS SECTION
+           ============================================ */
+
+        .stats-section {
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out 0.1s backwards;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            animation: countUp 0.6s ease-out backwards;
+        }
+
+        body.dark-mode .stat-card {
+            background: #0f3460;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            color: #e0e0e0;
+        }
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.15s;
+            border-top: 4px solid #2e7d32;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.25s;
+            border-top: 4px solid #ff9800;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.35s;
+            border-top: 4px solid #17a2b8;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.45s;
+            border-top: 4px solid #d32f2f;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .stat-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        body.dark-mode .stat-label {
+            color: #aaa;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1b5e20;
+        }
+
+        .stat-card:nth-child(2) .stat-value { color: #ff9800; }
+        .stat-card:nth-child(3) .stat-value { color: #17a2b8; }
+        .stat-card:nth-child(4) .stat-value { color: #d32f2f; }
+
+        body.dark-mode .stat-value { color: #81c784; }
+
+        /* ============================================
+           CONTROLS SECTION
+           ============================================ */
+
+        .controls-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        body.dark-mode .controls-section {
+            background: #0f3460;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 15px;
+        }
+
+        body.dark-mode .controls-title {
+            color: #81c784;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-input {
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            color: #333;
+        }
+
+        body.dark-mode .control-input {
+            background: #1a3a52;
+            border-color: #2a5a72;
+            color: #e0e0e0;
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        body.dark-mode .control-input:focus {
+            box-shadow: 0 0 0 3px rgba(129, 199, 132, 0.2);
+        }
+
+        .control-input::placeholder {
+            color: #999;
+        }
+
+        body.dark-mode .control-input::placeholder {
+            color: #777;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .admin-btn-primary {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .admin-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.3);
+        }
+
+        .admin-btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        body.dark-mode .admin-btn-secondary {
+            background: #1a3a52;
+            color: #e0e0e0;
+            border-color: #2a5a72;
+        }
+
+        .admin-btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #2e7d32;
+            color: #2e7d32;
+        }
+
+        /* ============================================
+           TABLE STYLES
+           ============================================ */
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #ff9800;
+            animation: slideInLeft 0.6s ease-out 0.3s backwards;
+        }
+
+        body.dark-mode .section-title {
+            color: #81c784;
+            border-bottom-color: #ff9800;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.6s ease-out 0.4s backwards;
+        }
+
+        body.dark-mode .table-container {
+            background: #0f3460;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .query-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .query-table thead {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        body.dark-mode .query-table thead {
+            background: linear-gradient(135deg, #1a3a52 0%, #0f3460 100%);
+        }
+
+        .query-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            color: #1b5e20;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e0e0e0;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .query-table th {
+            color: #81c784;
+            border-bottom-color: #2a5a72;
+        }
+
+        .query-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        body.dark-mode .query-table td {
+            color: #e0e0e0;
+            border-bottom-color: #1a3a52;
+        }
+
+        .query-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .query-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        body.dark-mode .query-table tbody tr:hover {
+            background-color: #1a3a52;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-inprogress { background-color: #d1ecf1; color: #0c5460; }
+        .status-resolved { background-color: #d4edda; color: #155724; }
+        .status-closed { background-color: #e2e3e5; color: #383d41; }
+
+        .priority-low { background-color: #d4edda; color: #155724; }
+        .priority-medium { background-color: #fff3cd; color: #856404; }
+        .priority-high { background-color: #f8d7da; color: #721c24; }
+
+        .type-badge {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f0f0f0;
+            color: #333;
+            position: relative;
+        }
+
+        body.dark-mode .action-btn {
+            background: #1a3a52;
+            color: #81c784;
+        }
+
+        .action-btn:hover {
+            background: #2e7d32;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .action-btn.urgent:hover {
+            background: #ff9800;
+        }
+
+        /* Tooltip */
+        .action-btn::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .action-btn:hover::before {
+            opacity: 1;
+            bottom: -40px;
+        }
+
+        /* ============================================
+           MODAL STYLES
+           ============================================ */
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeInOverlay 0.3s ease-out;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 0;
+            border-radius: 16px;
+            max-width: 750px;
+            width: 95%;
+            max-height: 90vh;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow-y: auto;
+        }
+
+        body.dark-mode .modal-content {
+            background: #0f3460;
+            color: #e0e0e0;
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f0f0 100%);
+        }
+
+        body.dark-mode .modal-header {
+            background: linear-gradient(135deg, #1a3a52 0%, #0f3460 100%);
+            border-bottom-color: #2a5a72;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1b5e20;
+        }
+
+        body.dark-mode .modal-header h2 {
+            color: #81c784;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .close-btn:hover {
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        body.dark-mode .close-btn:hover {
+            color: #e0e0e0;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .modal-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        body.dark-mode .modal-label {
+            color: #aaa;
+        }
+
+        .modal-value {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        body.dark-mode .modal-value {
+            color: #e0e0e0;
+        }
+
+        .timeline {
+            margin-bottom: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        body.dark-mode .timeline-item {
+            border-bottom-color: #1a3a52;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #2e7d32;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .timeline-icon.resolved {
+            background: #17a2b8;
+        }
+
+        .timeline-content h4 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        body.dark-mode .timeline-content h4 {
+            color: #e0e0e0;
+        }
+
+        .timeline-content p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        body.dark-mode .timeline-content p {
+            color: #aaa;
+        }
+
+        .timeline-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        body.dark-mode .timeline-time {
+            color: #777;
+        }
+
+        .reply-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        body.dark-mode .reply-section {
+            border-top-color: #1a3a52;
+        }
+
+        .reply-templates {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .template-btn {
+            padding: 6px 12px;
+            background: #f0f0f0;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        body.dark-mode .template-btn {
+            background: #1a3a52;
+            border-color: #2a5a72;
+            color: #e0e0e0;
+        }
+
+        .template-btn:hover {
+            background: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+
+        .reply-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            resize: vertical;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .reply-textarea {
+            background: #1a3a52;
+            border-color: #2a5a72;
+            color: #e0e0e0;
+        }
+
+        .reply-textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f9f9f9;
+        }
+
+        body.dark-mode .modal-footer {
+            background: #1a3a52;
+            border-top-color: #2a5a72;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-primary {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #1b5e20;
+        }
+
+        .modal-btn-close {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        body.dark-mode .modal-btn-close {
+            background: #2a5a72;
+            color: #e0e0e0;
+        }
+
+        .modal-btn-close:hover {
+            background: #d0d0d0;
+        }
+
+        /* ============================================
+           TOAST NOTIFICATIONS
+           ============================================ */
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #2e7d32;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInToast 0.4s ease-out;
+            pointer-events: all;
+        }
+
+        .toast.error {
+            background: #d32f2f;
+        }
+
+        .toast.warning {
+            background: #ff9800;
+        }
+
+        .toast.info {
+            background: #17a2b8;
+        }
+
+        .toast.removing {
+            animation: slideOutToast 0.4s ease-out;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+
+        .admin-footer {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-top: 60px;
+            animation: fadeInUp 0.6s ease-out 0.5s backwards;
+        }
+
+        body.dark-mode .admin-footer {
+            background: #0f3460;
+            border-top-color: #2a5a72;
+            color: #aaa;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+
+        @media (max-width: 1024px) {
+            .main-container {
+                padding: 30px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .admin-header {
+                padding: 15px 20px;
+            }
+
+            .header-title {
+                font-size: 22px;
+            }
+
+            .controls-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-left {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-title {
+                font-size: 20px;
+                flex: none;
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-actions {
+                flex-direction: column;
+            }
+
+            .admin-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .query-table th,
+            .query-table td {
+                padding: 12px 8px;
+                font-size: 12px;
+            }
+
+            .modal-content {
+                width: 98%;
+                max-height: 95vh;
+            }
+
+            .modal-row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 20px 10px;
+            }
+
+            .admin-header {
+                padding: 15px 10px;
+            }
+
+            .header-title {
+                font-size: 18px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+
+            .stat-icon {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .controls-section {
+                padding: 15px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .query-table {
+                font-size: 11px;
+            }
+
+            .query-table th,
+            .query-table td {
+                padding: 8px 5px;
+            }
+
+            .action-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .back-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .admin-profile {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .toast-container {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+            }
+
+            .toast {
+                margin: 0 -10px;
+                border-radius: 0;
+            }
+
+            .modal-content {
+                margin: 0;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header class="admin-header">
+    <div class="header-left">
+        <a href="admin_dashboard.html" class="back-btn">← Back</a>
+    </div>
+    <h1 class="header-title">NGO Queries</h1>
+    <div class="header-right">
+        <button class="header-icon-btn" id="darkModeToggle" title="Toggle Dark Mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="header-icon-btn" title="Notifications">
+            <i class="fas fa-bell"></i>
+        </button>
+        <div class="admin-profile" onclick="toggleProfileMenu()">
+            A
+            <div class="profile-menu" id="profileMenu">
+                <a href="#">
+                    <i class="fas fa-user"></i> My Profile
+                </a>
+                <a href="#">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a href="index.html" onclick="return confirm('Are you sure you want to logout?');">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<div class="main-container">
+
+    <!-- STATISTICS SECTION -->
+    <div class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-label">Total Queries</div>
+                <div class="stat-value" id="totalQueries">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-label">Pending Queries</div>
+                <div class="stat-value" id="pendingQueries">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">Resolved Queries</div>
+                <div class="stat-value" id="resolvedQueries">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-label">Urgent Queries</div>
+                <div class="stat-value" id="urgentQueries">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROLS SECTION -->
+    <div class="controls-section">
+        <h3 class="controls-title">Search & Filter</h3>
+        <div class="controls-grid">
+            <input type="text" id="searchInput" class="control-input" placeholder="Search NGO or Issue...">
+            <select id="statusFilter" class="control-input">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+            </select>
+            <select id="priorityFilter" class="control-input">
+                <option value="">All Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <select id="typeFilter" class="control-input">
+                <option value="">All Issue Types</option>
+                <option value="Donation Delay">Donation Delay</option>
+                <option value="Volunteer Issue">Volunteer Issue</option>
+                <option value="Technical">Technical</option>
+                <option value="Payment">Payment</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="admin-actions">
+            <button class="admin-btn admin-btn-primary" onclick="exportQueries()">
+                <i class="fas fa-download"></i> Export CSV
+            </button>
+            <button class="admin-btn admin-btn-secondary" onclick="showTemplates()">
+                <i class="fas fa-file-alt"></i> Templates
+            </button>
+        </div>
+    </div>
+
+    <!-- QUERIES MANAGEMENT TABLE -->
+    <h2 class="section-title">Query Management</h2>
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table class="query-table">
+                <thead>
+                    <tr>
+                        <th>Query ID</th>
+                        <th>NGO Name</th>
+                        <th>Issue Type</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Date Submitted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="queryTableBody">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================
+     QUERY DETAILS MODAL
+     ============================================ -->
+<div id="queryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Query Details</h2>
+            <button class="close-btn" onclick="closeQueryModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-row">
+                <div class="modal-field">
+                    <div class="modal-label">Query ID</div>
+                    <div class="modal-value" id="modalQueryId">-</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">Priority</div>
+                    <div class="modal-value" id="modalPriority">-</div>
+                </div>
+            </div>
+            <div class="modal-row">
+                <div class="modal-field">
+                    <div class="modal-label">NGO Name</div>
+                    <div class="modal-value" id="modalNGO">-</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">Contact Email</div>
+                    <div class="modal-value" id="modalEmail">-</div>
+                </div>
+            </div>
+            <div class="modal-row">
+                <div class="modal-field">
+                    <div class="modal-label">Contact Phone</div>
+                    <div class="modal-value" id="modalPhone">-</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">Issue Type</div>
+                    <div class="modal-value" id="modalType">-</div>
+                </div>
+            </div>
+            <div class="modal-row full">
+                <div class="modal-field">
+                    <div class="modal-label">Full Issue Description</div>
+                    <div class="modal-value" id="modalDescription">-</div>
+                </div>
+            </div>
+            <div class="modal-row full">
+                <div class="modal-field">
+                    <div class="modal-label">Donation Reference (if applicable)</div>
+                    <div class="modal-value" id="modalDonationRef">-</div>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="modal-label" style="margin-bottom: 15px;">Query Timeline</div>
+                <div id="timelineContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="reply-section">
+                <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; color: #1b5e20;">
+                    Reply to NGO
+                </h3>
+                <div class="reply-templates">
+                    <button class="template-btn" onclick="insertTemplate('acknowledged')">Issue Acknowledged</button>
+                    <button class="template-btn" onclick="insertTemplate('inprogress')">In Progress</button>
+                    <button class="template-btn" onclick="insertTemplate('resolved')">Resolved</button>
+                </div>
+                <textarea id="replyText" class="reply-textarea" placeholder="Type your reply to the NGO..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-close" onclick="closeQueryModal()">Close</button>
+            <button class="modal-btn modal-btn-primary" onclick="sendReply()">Send Reply</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer class="admin-footer">
+    © 2026 FEED: Food Equity and Efficient Distribution | Admin Panel
+</footer>
+
+<!-- ============================================
+     TOAST CONTAINER
+     ============================================ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+    // ============================================
+    // QUERY DATA
+    // ============================================
+
+    const queryData = [
+        {
+            id: 'Q001',
+            ngo: 'Helping Hands Foundation',
+            email: 'info@helpinghands.org',
+            phone: '9876543210',
+            issueType: 'Donation Delay',
+            description: 'Scheduled food donation from ABC Restaurant was not received on time. Expected arrival was 11:00 AM but still not received by 3:00 PM.',
+            donationRef: 'DN-2026-001',
+            priority: 'High',
+            status: 'Pending',
+            dateSubmitted: '2026-01-21',
+            timeline: [
+                { type: 'submitted', time: '2026-01-21 3:15 PM', desc: 'Query submitted by NGO' }
+            ]
+        },
+        {
+            id: 'Q002',
+            ngo: 'Food for All NGO',
+            email: 'contact@foodforall.org',
+            phone: '9123456780',
+            issueType: 'Volunteer Issue',
+            description: 'Assigned volunteer failed to show up for collection. No prior notification. This resulted in food waste for a donation of 200kg rice.',
+            donationRef: 'DN-2026-005',
+            priority: 'High',
+            status: 'In Progress',
+            dateSubmitted: '2026-01-20',
+            timeline: [
+                { type: 'submitted', time: '2026-01-20 4:45 PM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-21 10:00 AM', desc: 'Admin acknowledged and investigating' }
+            ]
+        },
+        {
+            id: 'Q003',
+            ngo: 'Community Kitchen',
+            email: 'admin@communitykitchen.in',
+            phone: '9988776655',
+            issueType: 'Technical',
+            description: 'Unable to login to the donation management portal. Getting error "Invalid credentials" despite correct password.',
+            donationRef: '-',
+            priority: 'Medium',
+            status: 'Resolved',
+            dateSubmitted: '2026-01-19',
+            timeline: [
+                { type: 'submitted', time: '2026-01-19 2:30 PM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-19 4:00 PM', desc: 'Password reset link sent' },
+                { type: 'resolved', time: '2026-01-19 4:30 PM', desc: 'NGO confirmed access restored' }
+            ]
+        },
+        {
+            id: 'Q004',
+            ngo: 'Unity Foundation',
+            email: 'queries@unityfoundation.org',
+            phone: '9876543211',
+            issueType: 'Payment',
+            description: 'Incentive payment for December not received. Invoice reference: INV-2025-12-005.',
+            donationRef: '-',
+            priority: 'High',
+            status: 'In Progress',
+            dateSubmitted: '2026-01-18',
+            timeline: [
+                { type: 'submitted', time: '2026-01-18 11:00 AM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-18 2:00 PM', desc: 'Finance team notified' }
+            ]
+        },
+        {
+            id: 'Q005',
+            ngo: 'Hope Initiative',
+            email: 'support@hopeinitiative.com',
+            phone: '9123456781',
+            issueType: 'Donation Delay',
+            description: 'Cooked meals donation from Grand Hotel scheduled for 10:00 AM is still pending at 12:30 PM. Food quality may be compromised.',
+            donationRef: 'DN-2026-010',
+            priority: 'Medium',
+            status: 'Closed',
+            dateSubmitted: '2026-01-21',
+            timeline: [
+                { type: 'submitted', time: '2026-01-21 12:45 PM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-21 1:30 PM', desc: 'Volunteer confirmed pickup' },
+                { type: 'resolved', time: '2026-01-21 2:00 PM', desc: 'Delivery completed successfully' }
+            ]
+        },
+        {
+            id: 'Q006',
+            ngo: 'Nourish Society',
+            email: 'admin@nourishsociety.org',
+            phone: '9876543212',
+            issueType: 'Other',
+            description: 'Requesting documentation for audit purposes. Need detailed reports on all donations received in January 2026.',
+            donationRef: '-',
+            priority: 'Low',
+            status: 'Resolved',
+            dateSubmitted: '2026-01-17',
+            timeline: [
+                { type: 'submitted', time: '2026-01-17 9:00 AM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-17 5:00 PM', desc: 'Documentation compiled' },
+                { type: 'resolved', time: '2026-01-18 10:00 AM', desc: 'Reports sent to NGO' }
+            ]
+        },
+        {
+            id: 'Q007',
+            ngo: 'Helping Hands Foundation',
+            email: 'info@helpinghands.org',
+            phone: '9876543210',
+            issueType: 'Technical',
+            description: 'Dashboard showing incorrect meal count. System shows 500 meals but actual received is 550 meals. Discrepancy needs investigation.',
+            donationRef: 'DN-2026-015',
+            priority: 'Medium',
+            status: 'Pending',
+            dateSubmitted: '2026-01-21',
+            timeline: [
+                { type: 'submitted', time: '2026-01-21 10:30 AM', desc: 'Query submitted by NGO' }
+            ]
+        },
+        {
+            id: 'Q008',
+            ngo: 'Food for All NGO',
+            email: 'contact@foodforall.org',
+            phone: '9123456780',
+            issueType: 'Volunteer Issue',
+            description: 'Previous volunteer reassignment request still pending for 5 days. Need alternative volunteer urgently for upcoming donation collection.',
+            donationRef: '-',
+            priority: 'High',
+            status: 'In Progress',
+            dateSubmitted: '2026-01-16',
+            timeline: [
+                { type: 'submitted', time: '2026-01-16 3:00 PM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-17 9:00 AM', desc: 'Reassignment request processed' }
+            ]
+        },
+        {
+            id: 'Q009',
+            ngo: 'Community Kitchen',
+            email: 'admin@communitykitchen.in',
+            phone: '9988776655',
+            issueType: 'Donation Delay',
+            description: 'Vegetables donation from Local Dairy Farm delivered with quality issues. Some items were wilted and unsuitable for distribution.',
+            donationRef: 'DN-2026-020',
+            priority: 'Medium',
+            status: 'Closed',
+            dateSubmitted: '2026-01-15',
+            timeline: [
+                { type: 'submitted', time: '2026-01-15 2:15 PM', desc: 'Query submitted by NGO' },
+                { type: 'resolved', time: '2026-01-15 4:00 PM', desc: 'Farmer contacted for replacement' },
+                { type: 'resolved', time: '2026-01-16 10:00 AM', desc: 'Quality replacement delivered' }
+            ]
+        },
+        {
+            id: 'Q010',
+            ngo: 'Unity Foundation',
+            email: 'queries@unityfoundation.org',
+            phone: '9876543211',
+            issueType: 'Other',
+            description: 'Request to upgrade NGO status from Level 2 to Level 3. Submitting supporting documents and compliance certificates.',
+            donationRef: '-',
+            priority: 'Low',
+            status: 'Pending',
+            dateSubmitted: '2026-01-20',
+            timeline: [
+                { type: 'submitted', time: '2026-01-20 11:00 AM', desc: 'Upgrade request submitted' }
+            ]
+        }
+    ];
+
+    // ============================================
+    // GLOBAL VARIABLES
+    // ============================================
+
+    let filteredData = [...queryData];
+    let currentQueryId = null;
+
+    const replyTemplates = {
+        acknowledged: 'Thank you for reporting this issue. We have acknowledged your query and our team is looking into it. We will get back to you with an update within 24 hours.',
+        inprogress: 'Thank you for your patience. Your issue is currently being addressed by our support team. We expect to have a resolution shortly and will update you soon.',
+        resolved: 'We are pleased to inform you that your query has been resolved. If you have any further issues or questions, please do not hesitate to contact us.'
+    };
+
+    // ============================================
+    // STATS ANIMATION
+    // ============================================
+
+    function updateStats() {
+        const total = queryData.length;
+        const pending = queryData.filter(q => q.status === 'Pending').length;
+        const resolved = queryData.filter(q => q.status === 'Resolved').length;
+        const urgent = queryData.filter(q => q.priority === 'High').length;
+
+        animateCounter('totalQueries', total);
+        animateCounter('pendingQueries', pending);
+        animateCounter('resolvedQueries', resolved);
+        animateCounter('urgentQueries', urgent);
+    }
+
+    function animateCounter(elementId, finalValue) {
+        const element = document.getElementById(elementId);
+        let currentValue = 0;
+        const increment = Math.ceil(finalValue / 40);
+        const duration = 800;
+        const steps = 40;
+        const stepDuration = duration / steps;
+
+        const counter = setInterval(() => {
+            currentValue += increment;
+            if (currentValue >= finalValue) {
+                currentValue = finalValue;
+                clearInterval(counter);
+            }
+            element.textContent = currentValue;
+        }, stepDuration);
+    }
+
+    // ============================================
+    // TABLE RENDERING
+    // ============================================
+
+    function renderTable(data) {
+        const tbody = document.getElementById('queryTableBody');
+        tbody.innerHTML = data.map(query => `
+            <tr>
+                <td><strong>${query.id}</strong></td>
+                <td>${query.ngo}</td>
+                <td><span class="badge type-badge">${query.issueType}</span></td>
+                <td>${query.description.substring(0, 35)}...</td>
+                <td><span class="badge priority-${query.priority.toLowerCase()}">${query.priority}</span></td>
+                <td>${query.dateSubmitted}</td>
+                <td><span class="badge status-${query.status.toLowerCase().replace(' ', '')}">${query.status}</span></td>
+                <td>
+                    <div class="actions-cell">
+                        <button class="action-btn" data-tooltip="View Details" onclick="openQueryModal('${query.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" data-tooltip="Change Status" onclick="changeStatus('${query.id}')">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                        <button class="action-btn urgent" data-tooltip="Mark Urgent" onclick="markUrgent('${query.id}')">
+                            <i class="fas fa-exclamation"></i>
+                        </button>
+                        <button class="action-btn" data-tooltip="Close Query" onclick="closeQuery('${query.id}')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ============================================
+    // SEARCH & FILTER
+    // ============================================
+
+    function filterTable() {
+        let data = [...queryData];
+
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const statusValue = document.getElementById('statusFilter').value;
+        const priorityValue = document.getElementById('priorityFilter').value;
+        const typeValue = document.getElementById('typeFilter').value;
+
+        if (searchValue) {
+            data = data.filter(q => 
+                q.ngo.toLowerCase().includes(searchValue) ||
+                q.issueType.toLowerCase().includes(searchValue) ||
+                q.description.toLowerCase().includes(searchValue)
+            );
+        }
+
+        if (statusValue) {
+            data = data.filter(q => q.status === statusValue);
+        }
+
+        if (priorityValue) {
+            data = data.filter(q => q.priority === priorityValue);
+        }
+
+        if (typeValue) {
+            data = data.filter(q => q.issueType === typeValue);
+        }
+
+        filteredData = data;
+        renderTable(filteredData);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', filterTable);
+    document.getElementById('statusFilter').addEventListener('change', filterTable);
+    document.getElementById('priorityFilter').addEventListener('change', filterTable);
+    document.getElementById('typeFilter').addEventListener('change', filterTable);
+
+    // ============================================
+    // MODAL FUNCTIONS
+    // ============================================
+
+    function openQueryModal(queryId) {
+        const query = queryData.find(q => q.id === queryId);
+        if (!query) return;
+
+        currentQueryId = queryId;
+
+        document.getElementById('modalQueryId').textContent = query.id;
+        document.getElementById('modalNGO').textContent = query.ngo;
+        document.getElementById('modalEmail').textContent = query.email;
+        document.getElementById('modalPhone').textContent = query.phone;
+        document.getElementById('modalType').textContent = query.issueType;
+        document.getElementById('modalDescription').textContent = query.description;
+        document.getElementById('modalDonationRef').textContent = query.donationRef !== '-' ? query.donationRef : 'N/A';
+        
+        const priorityBadge = `<span class="badge priority-${query.priority.toLowerCase()}">${query.priority}</span>`;
+        document.getElementById('modalPriority').innerHTML = priorityBadge;
+
+        // Build timeline
+        const timelineHtml = query.timeline.map(item => `
+            <div class="timeline-item">
+                <div class="timeline-icon ${item.type === 'resolved' ? 'resolved' : ''}">
+                    ${item.type === 'submitted' ? '<i class="fas fa-paper-plane"></i>' : '<i class="fas fa-check"></i>'}
+                </div>
+                <div class="timeline-content">
+                    <h4>${item.type === 'submitted' ? 'Query Submitted' : 'Admin Response'}</h4>
+                    <p>${item.desc}</p>
+                    <div class="timeline-time">${item.time}</div>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('timelineContainer').innerHTML = timelineHtml;
+
+        document.getElementById('replyText').value = '';
+        document.getElementById('queryModal').classList.add('active');
+    }
+
+    function closeQueryModal() {
+        document.getElementById('queryModal').classList.remove('active');
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('queryModal');
+        if (event.target === modal) {
+            closeQueryModal();
+        }
+    }
+
+    // ============================================
+    // TEMPLATE INSERTION
+    // ============================================
+
+    function insertTemplate(templateKey) {
+        document.getElementById('replyText').value = replyTemplates[templateKey];
+        document.getElementById('replyText').focus();
+    }
+
+    // ============================================
+    // ACTION HANDLERS
+    // ============================================
+
+    function changeStatus(queryId) {
+        const query = queryData.find(q => q.id === queryId);
+        const newStatus = prompt('Select new status (Pending/In Progress/Resolved/Closed):', query.status);
+        const validStatuses = ['Pending', 'In Progress', 'Resolved', 'Closed'];
+        
+        if (newStatus && validStatuses.includes(newStatus)) {
+            query.status = newStatus;
+            renderTable(filteredData);
+            updateStats();
+            showToast(`Query ${queryId} status updated to ${newStatus}`, 'success');
+        }
+    }
+
+    function markUrgent(queryId) {
+        const query = queryData.find(q => q.id === queryId);
+        if (query.priority !== 'High') {
+            query.priority = 'High';
+            renderTable(filteredData);
+            updateStats();
+            showToast(`Query ${queryId} marked as urgent`, 'warning');
+        } else {
+            showToast('This query is already marked as urgent', 'info');
+        }
+    }
+
+    function closeQuery(queryId) {
+        const query = queryData.find(q => q.id === queryId);
+        query.status = 'Closed';
+        renderTable(filteredData);
+        updateStats();
+        showToast(`Query ${queryId} closed`, 'success');
+    }
+
+    function sendReply() {
+        const replyText = document.getElementById('replyText').value.trim();
+        
+        if (!replyText) {
+            showToast('Please enter a reply before sending', 'error');
+            return;
+        }
+
+        const query = queryData.find(q => q.id === currentQueryId);
+        if (query) {
+            query.timeline.push({
+                type: 'resolved',
+                time: new Date().toLocaleString('en-IN'),
+                desc: 'Admin reply sent'
+            });
+
+            if (query.status === 'Pending') {
+                query.status = 'In Progress';
+            }
+
+            showToast(`Reply sent to ${query.ngo}. Notification email will be delivered.`, 'success');
+            closeQueryModal();
+            renderTable(filteredData);
+            updateStats();
+        }
+    }
+
+    // ============================================
+    // ADMIN UTILITIES
+    // ============================================
+
+    function exportQueries() {
+        let csv = 'Query ID,NGO Name,Issue Type,Priority,Status,Date Submitted,Contact\n';
+        queryData.forEach(q => {
+            csv += `"${q.id}","${q.ngo}","${q.issueType}","${q.priority}","${q.status}","${q.dateSubmitted}","${q.email}"\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'queries_export.csv';
+        a.click();
+
+        showToast('Queries exported successfully', 'success');
+    }
+
+    function showTemplates() {
+        const message = `Quick Reply Templates:\n\n1. Acknowledged:\n${replyTemplates.acknowledged}\n\n2. In Progress:\n${replyTemplates.inprogress}\n\n3. Resolved:\n${replyTemplates.resolved}`;
+        alert(message);
+    }
+
+    // ============================================
+    // PROFILE MENU
+    // ============================================
+
+    function toggleProfileMenu() {
+        const menu = document.getElementById('profileMenu');
+        menu.classList.toggle('active');
+    }
+
+    window.addEventListener('click', function(event) {
+        const menu = document.getElementById('profileMenu');
+        const profile = document.querySelector('.admin-profile');
+        if (!profile.contains(event.target)) {
+            menu.classList.remove('active');
+        }
+    });
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icons = {
+            success: '<i class="fas fa-check-circle"></i>',
+            error: '<i class="fas fa-exclamation-circle"></i>',
+            warning: '<i class="fas fa-exclamation-triangle"></i>',
+            info: '<i class="fas fa-info-circle"></i>'
+        };
+
+        toast.innerHTML = `${icons[type]} ${message}`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('removing');
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
+
+    // ============================================
+    // DARK MODE TOGGLE
+    // ============================================
+
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        darkModeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+
+    window.addEventListener('load', () => {
+        updateStats();
+        renderTable(filteredData);
+    });
+</script>
+
+</body>
+</html>

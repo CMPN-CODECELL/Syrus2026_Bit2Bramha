@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | FEED: Food Equity and Efficient Distribution</title>
+    
+    <!-- Google Fonts: Poppins (multiple weights) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           CSS RESET & BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================
+           BACKGROUND VIDEO & OVERLAY
+           ============================================ */
+        .video-bg {
+            position: fixed;
+            inset: 0;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: -1;
+        }
+
+        /* ============================================
+           KEYFRAME ANIMATIONS
+           ============================================ */
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fieldStagger {
+            from {
+                opacity: 0;
+                transform: translateX(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(255, 152, 0, 0);
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes shieldBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-5px) scale(1.05);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 152, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(255, 152, 0, 0.5);
+            }
+        }
+
+        /* ============================================
+           MAIN LOGIN CONTAINER
+           ============================================ */
+        .login-container {
+            width: 100%;
+            max-width: 580px;
+            padding: 20px;
+            perspective: 1000px;
+            animation: cardFadeIn 0.8s ease-out;
+        }
+
+        /* ============================================
+           LOGIN CARD (GLASSMORPHISM)
+           ============================================ */
+        .login-card {
+            background: rgba(255, 255, 255, 0.99);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgb(248, 236, 236);
+            border-radius: 30px;
+            padding: 55px 50px;
+            box-shadow: 
+                0 8px 32px rgba(245, 237, 237, 0.642),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgb(240, 240, 240) 0%,
+                rgba(153, 225, 65, 0.642) 100%
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================
+           ADMIN ICON/SHIELD
+           ============================================ */
+        .admin-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.4);
+            animation: shieldBounce 2s ease-in-out infinite;
+        }
+
+        /* ============================================
+           HEADING & SUBTITLE
+           ============================================ */
+        .login-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2e7d32;
+            text-align: center;
+            margin-bottom: 12px;
+            animation: slideInDown 0.6s ease-out 0.1s both;
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: #ff9800;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+            animation: slideInDown 0.6s ease-out 0.2s both;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-hint {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 35px;
+            animation: slideInDown 0.6s ease-out 0.25s both;
+            line-height: 1.5;
+        }
+
+        /* ============================================
+           FORM FIELDS
+           ============================================ */
+        .form-group {
+            margin-bottom: 22px;
+            animation: fieldStagger 0.6s ease-out both;
+            position: relative;
+        }
+
+        .form-group:nth-child(4) { animation-delay: 0.35s; }
+        .form-group:nth-child(5) { animation-delay: 0.45s; }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 18px 15px 45px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 500;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+            font-weight: 400;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff9800;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 0 0 3px rgba(255, 152, 0, 0.1),
+                0 5px 20px rgba(255, 152, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-input.error {
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .form-input.success {
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        /* ============================================
+           INPUT ICONS
+           ============================================ */
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 18px;
+            color: #999;
+            transition: color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-input:focus ~ .input-icon,
+        .form-input:not(:placeholder-shown) ~ .input-icon {
+            color: #ff9800;
+        }
+
+        /* ============================================
+           PASSWORD TOGGLE BUTTON
+           ============================================ */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: #ff9800;
+            transform: scale(1.1);
+        }
+
+        /* ============================================
+           SECURITY HINT
+           ============================================ */
+        .security-hint {
+            font-size: 12px;
+            color: #2e7d32;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: slideInUp 0.6s ease-out 0.5s both;
+        }
+
+        .security-hint::before {
+            content: '🔒';
+            font-size: 13px;
+        }
+
+        /* ============================================
+           LOGIN BUTTON
+           ============================================ */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 25px rgba(255, 152, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            animation: slideInUp 0.6s ease-out 0.5s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(255, 152, 0, 0.4);
+        }
+
+        .login-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.9;
+            cursor: not-allowed;
+        }
+
+        .login-btn.loading {
+            animation: buttonPulse 1.5s ease-out infinite;
+        }
+
+        /* ============================================
+           LOADING SPINNER
+           ============================================ */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .btn-text {
+            display: inline;
+        }
+
+        /* ============================================
+           NAVIGATION LINKS
+           ============================================ */
+        .link-container {
+            text-align: center;
+            animation: slideInUp 0.6s ease-out 0.6s both;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            background: rgba(46, 125, 50, 0.1);
+            color: #1b5e20;
+            transform: translateX(-4px);
+        }
+
+        .back-link::before {
+            content: '←';
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover::before {
+            transform: translateX(-3px);
+        }
+
+        /* ============================================
+           ERROR & SUCCESS MESSAGES
+           ============================================ */
+        .error-message {
+            display: none;
+            background: rgba(211, 47, 47, 0.1);
+            color: #d32f2f;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 15px;
+            border-left: 4px solid #d32f2f;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(46, 125, 50, 0.1);
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 15px;
+            border-left: 4px solid #2e7d32;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* ============================================
+           ACCESSIBILITY & KEYBOARD NAVIGATION
+           ============================================ */
+        input:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #ff9800;
+            outline-offset: 2px;
+        }
+
+        a:focus-visible {
+            outline: 3px solid #2e7d32;
+            outline-offset: 2px;
+        }
+
+        /* ============================================
+           REDUCED MOTION SUPPORT
+           ============================================ */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .login-container {
+                max-width: 100%;
+                padding: 15px;
+            }
+
+            .login-card {
+                padding: 40px 30px;
+            }
+
+            .login-title {
+                font-size: 26px;
+            }
+
+            .admin-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+                margin-bottom: 20px;
+            }
+
+            .form-input {
+                padding: 13px 16px 13px 40px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .login-btn {
+                padding: 14px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+                border-radius: 24px;
+            }
+
+            .login-title {
+                font-size: 22px;
+                margin-bottom: 8px;
+            }
+
+            .login-subtitle {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+
+            .login-hint {
+                font-size: 12px;
+                margin-bottom: 25px;
+            }
+
+            .admin-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                margin-bottom: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-label {
+                font-size: 12px;
+            }
+
+            .form-input {
+                padding: 12px 14px 12px 36px;
+                font-size: 14px;
+            }
+
+            .input-icon {
+                left: 12px;
+                font-size: 16px;
+            }
+
+            .password-toggle {
+                right: 12px;
+                font-size: 16px;
+            }
+
+            .login-btn {
+                padding: 13px;
+                font-size: 13px;
+                letter-spacing: 0.5px;
+            }
+
+            .security-hint {
+                font-size: 11px;
+            }
+        }
+
+        /* ============================================
+           DARK MODE SUPPORT (Optional)
+           ============================================ */
+        @media (prefers-color-scheme: dark) {
+            .login-card {
+                background: rgba(30, 30, 30, 0.97);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .login-title {
+                color: #4caf50;
+            }
+
+            .login-hint {
+                color: #aaa;
+            }
+
+            .form-input {
+                background: rgba(255, 255, 255, 0.05);
+                color: #fff;
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .form-input::placeholder {
+                color: #777;
+            }
+
+            .form-input:focus {
+                background: rgba(255, 255, 255, 0.1);
+                border-color: #ff9800;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Video -->
+    <video autoplay muted loop class="video-bg">
+        <source src="https://cdn.coverr.co/videos/coverr-community-kitchen-7744/1080p.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- Admin Shield Icon -->
+            <div class="admin-icon">🛡️</div>
+
+            <!-- Login Title & Subtitle -->
+            <h1 class="login-title">Admin Login</h1>
+            <p class="login-subtitle">Authorized Access Only</p>
+            <p class="login-hint">FEED: Food Equity and Efficient Distribution<br>Secure Admin Control Panel</p>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+
+                <!-- Admin ID / Email Field -->
+                <div class="form-group">
+                    <label class="form-label" for="adminId">Admin ID</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input 
+                            type="text" 
+                            id="adminId"
+                            class="form-input" 
+                            placeholder="Enter Admin ID" 
+                            autocomplete="off"
+                            required
+                            aria-label="Admin ID">
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔑</span>
+                        <input 
+                            type="password" 
+                            id="password"
+                            class="form-input" 
+                            placeholder="Enter Password" 
+                            autocomplete="off"
+                            required
+                            aria-label="Password">
+                        <button 
+                            type="button" 
+                            class="password-toggle" 
+                            id="passwordToggle"
+                            aria-label="Toggle password visibility">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="security-hint">Never share your credentials</div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="error-message" id="errorMessage" role="alert">
+                    <strong>Error:</strong> Invalid Admin ID or Password. Please try again.
+                </div>
+
+                <!-- Success Message -->
+                <div class="success-message" id="successMessage" role="alert">
+                    <strong>Success!</strong> Redirecting to Admin Dashboard...
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">Login as Admin</span>
+                </button>
+
+            </form>
+
+            <!-- Back to Home Link -->
+            <div class="link-container">
+                <a href="index.html" class="back-link" title="Return to home page">
+                    Back to Home
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT: INTERACTION & VALIDATION
+         ============================================ -->
+    <script>
+        // ========================================
+        // DOM Elements
+        // ========================================
+        const loginForm = document.getElementById('loginForm');
+        const adminIdInput = document.getElementById('adminId');
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Credentials (from original backend logic)
+        const ADMIN_ID = "admin123";
+        const ADMIN_PASSWORD = "admin@123";
+
+        // ========================================
+        // Password Toggle Functionality
+        // ========================================
+        passwordToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            
+            // Update icon
+            passwordToggle.textContent = isPassword ? '🙈' : '👁️';
+        });
+
+        // ========================================
+        // Form Validation & Error Handling
+        // ========================================
+        function validateForm() {
+            let isValid = true;
+
+            // Validate Admin ID
+            if (!adminIdInput.value.trim()) {
+                adminIdInput.classList.add('error');
+                adminIdInput.classList.remove('success');
+                isValid = false;
+            } else {
+                adminIdInput.classList.remove('error');
+            }
+
+            // Validate Password
+            if (!passwordInput.value) {
+                passwordInput.classList.add('error');
+                passwordInput.classList.remove('success');
+                isValid = false;
+            } else {
+                passwordInput.classList.remove('error');
+            }
+
+            return isValid;
+        }
+
+        // ========================================
+        // Form Input Listeners (Real-time validation)
+        // ========================================
+        adminIdInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('error');
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.value) {
+                this.classList.remove('error');
+            }
+        });
+
+        // ========================================
+        // Form Submission Handler
+        // ========================================
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Hide previous messages
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+
+            // Validate form fields
+            if (!validateForm()) {
+                errorMessage.textContent = '⚠️ Please fill in all fields';
+                errorMessage.classList.add('show');
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.classList.add('loading');
+            const originalText = loginBtn.querySelector('.btn-text').textContent;
+            loginBtn.querySelector('.btn-text').innerHTML = 
+                '<span class="spinner"></span>Verifying...';
+
+            // Simulate server check (brief delay for UX)
+            setTimeout(() => {
+                const enteredId = adminIdInput.value.trim();
+                const enteredPassword = passwordInput.value;
+
+                // Check credentials
+                if (enteredId === ADMIN_ID && enteredPassword === ADMIN_PASSWORD) {
+                    // Success
+                    adminIdInput.classList.add('success');
+                    passwordInput.classList.add('success');
+                    
+                    successMessage.classList.add('show');
+                    
+                    // Redirect after brief delay
+                    setTimeout(() => {
+                        window.location.href = "admin_dashboard.html";
+                    }, 1000);
+                } else {
+                    // Failure
+                    adminIdInput.classList.add('error');
+                    passwordInput.classList.add('error');
+                    
+                    errorMessage.classList.add('show');
+                    
+                    // Reset button
+                    loginBtn.disabled = false;
+                    loginBtn.classList.remove('loading');
+                    loginBtn.querySelector('.btn-text').textContent = originalText;
+                    
+                    // Clear password for security
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            }, 800); // Simulate brief processing delay
+        });
+
+        // ========================================
+        // Keyboard Navigation Enhancement
+        // ========================================
+        // Focus first input on load
+        window.addEventListener('load', function() {
+            adminIdInput.focus();
+        });
+
+        // Support Enter key from any field
+        [adminIdInput, passwordInput].forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+        // ========================================
+        // Accessibility: Announce messages to screen readers
+        // ========================================
+        function announceMessage(message) {
+            const announcement = document.createElement('div');
+            announcement.setAttribute('role', 'status');
+            announcement.setAttribute('aria-live', 'polite');
+            announcement.style.position = 'absolute';
+            announcement.style.left = '-10000px';
+            announcement.textContent = message;
+            document.body.appendChild(announcement);
+            setTimeout(() => announcement.remove(), 3000);
+        }
+    </script>
+
+</body>
+</html>

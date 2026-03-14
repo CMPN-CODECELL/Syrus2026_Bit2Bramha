@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FEED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           ROOT & GLOBAL STYLES
+           ============================================ */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #e8f5e9;
+            --accent-orange: #ff9800;
+            --accent-blue: #2196f3;
+            --accent-red: #f44336;
+            --text-dark: #1a1a1a;
+            --text-light: #666666;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* ============================================
+           VIDEO BACKGROUND
+           ============================================ */
+        
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(232, 245, 233, 0.92) 0%, rgba(241, 248, 233, 0.95) 100%);
+            backdrop-filter: blur(2px);
+            z-index: -1;
+        }
+        
+        /* ============================================
+           TOP NAVIGATION BAR
+           ============================================ */
+        
+        .navbar-top {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--white);
+            box-shadow: var(--shadow-md);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .navbar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            background: var(--light-green);
+            transition: all 0.3s ease;
+        }
+        
+        .admin-profile:hover {
+            background: rgba(46, 125, 50, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .admin-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--accent-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.25);
+        }
+        
+        .admin-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .admin-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .admin-role {
+            font-size: 0.75rem;
+            color: var(--primary-green);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.15) rotate(15deg);
+            color: var(--accent-orange);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: var(--accent-red);
+            color: var(--white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(244, 67, 54, 0.4);
+            animation: badgePulse 2s infinite;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .logout-btn {
+            padding: 0.6rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-orange), #ff6f00);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logout-btn:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .logout-btn:active:before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 152, 0, 0.3);
+        }
+        
+        .logout-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* ============================================
+           MAIN DASHBOARD CONTAINER
+           ============================================ */
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+        
+        /* ============================================
+           DASHBOARD HEADER
+           ============================================ */
+        
+        .dashboard-header {
+            margin-bottom: 3.5rem;
+            animation: fadeInDown 0.6s ease-out;
+        }
+        
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+        
+        .dashboard-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        
+        /* ============================================
+           SECTION DIVIDERS & HEADINGS
+           ============================================ */
+        
+        .section-heading {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary-green);
+            display: inline-block;
+            animation: slideInLeft 0.6s ease-out 0.15s both;
+        }
+        
+        /* ============================================
+           DASHBOARD CARDS GRID
+           ============================================ */
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        /* ============================================
+           ACTION CARDS
+           ============================================ */
+        
+        .action-card {
+            position: relative;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            animation: cardFadeIn 0.6s ease-out both;
+        }
+        
+        /* Staggered animation for each card */
+        .action-card:nth-child(1) { animation-delay: 0.1s; }
+        .action-card:nth-child(2) { animation-delay: 0.2s; }
+        .action-card:nth-child(3) { animation-delay: 0.3s; }
+        .action-card:nth-child(4) { animation-delay: 0.4s; }
+        .action-card:nth-child(5) { animation-delay: 0.5s; }
+        .action-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-orange), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(46, 125, 50, 0.1);
+        }
+        
+        .action-card:active {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Color-coded left accents */
+        .action-card.green-accent { border-left: 5px solid var(--primary-green); }
+        .action-card.orange-accent { border-left: 5px solid var(--accent-orange); }
+        .action-card.blue-accent { border-left: 5px solid var(--accent-blue); }
+        .action-card.red-accent { border-left: 5px solid var(--accent-red); }
+        
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            background: var(--light-green);
+        }
+        
+        .action-card.orange-accent .card-icon-wrapper { background: rgba(255, 152, 0, 0.15); }
+        .action-card.blue-accent .card-icon-wrapper { background: rgba(33, 150, 243, 0.15); }
+        .action-card.red-accent .card-icon-wrapper { background: rgba(244, 67, 54, 0.15); }
+        
+        .action-card:hover .card-icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .card-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--light-green);
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .action-card.orange-accent .card-badge {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--accent-orange);
+        }
+        
+        .action-card.blue-accent .card-badge {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--accent-blue);
+        }
+        
+        .action-card.red-accent .card-badge {
+            background: rgba(244, 67, 54, 0.2);
+            color: var(--accent-red);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .action-card:hover .card-title {
+            color: var(--primary-green);
+        }
+        
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .card-divider {
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-green), rgba(46, 125, 50, 0));
+            border-radius: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .action-card.orange-accent .card-divider {
+            background: linear-gradient(90deg, var(--accent-orange), rgba(255, 152, 0, 0));
+        }
+        
+        .action-card.blue-accent .card-divider {
+            background: linear-gradient(90deg, var(--accent-blue), rgba(33, 150, 243, 0));
+        }
+        
+        .action-card.red-accent .card-divider {
+            background: linear-gradient(90deg, var(--accent-red), rgba(244, 67, 54, 0));
+        }
+        
+        .card-description {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+        
+        .card-helper {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+        
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-5px);
+        }
+        
+        .action-card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+        
+        .card-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        
+        /* ============================================
+           TOOLTIPS
+           ============================================ */
+        
+        .tooltip-text {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: var(--text-dark);
+            color: var(--white);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--text-dark);
+        }
+        
+        .action-card:hover .tooltip-text {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            .dashboard-title {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-top {
+                padding: 0.8rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .navbar-content {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .navbar-left {
+                gap: 1rem;
+                width: 100%;
+            }
+            
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            
+            .navbar-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .admin-info {
+                display: none;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .dashboard-container {
+                padding: 0 1rem 2rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-heading {
+                font-size: 1.1rem;
+                margin: 1.5rem 0 1rem;
+            }
+            
+            .action-card {
+                padding: 1.5rem;
+            }
+            
+            .card-icon-wrapper {
+                width: 50px;
+                height: 50px;
+                font-size: 1.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar-top {
+                padding: 0.6rem 0.8rem;
+                margin-bottom: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1rem;
+            }
+            
+            .logout-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .notification-bell {
+                font-size: 1.2rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1.3rem;
+            }
+            
+            .admin-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* ============================================
+           KEYBOARD ACCESSIBILITY
+           ============================================ */
+        
+        .action-card:focus-visible {
+            outline: 3px solid var(--accent-orange);
+            outline-offset: 2px;
+        }
+        
+        .logout-btn:focus-visible {
+            outline: 3px solid var(--primary-green);
+            outline-offset: 2px;
+        }
+        
+        .notification-bell:focus-visible {
+            outline: 2px dashed var(--primary-green);
+            border-radius: 4px;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- VIDEO BACKGROUND -->
+<video autoplay muted loop playsinline class="video-bg">
+    <source src="https://cdn.coverr.co/videos/coverr-community-kitchen-7744/1080p.mp4" type="video/mp4">
+</video>
+<div class="overlay"></div>
+
+<!-- TOP NAVIGATION -->
+<div class="navbar-top">
+    <div class="navbar-content">
+        <div class="navbar-left">
+            <h1 class="navbar-brand">FEED</h1>
+        </div>
+        
+        <div class="navbar-right">
+            <div class="admin-profile" role="status" aria-label="Admin profile">
+                <div class="admin-avatar">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Administrator</div>
+                    <div class="admin-role">Admin</div>
+                </div>
+            </div>
+            
+            <div class="notification-bell" role="button" tabindex="0" aria-label="Notifications" title="View notifications">
+                🔔
+                <span class="notification-badge" aria-label="3 new notifications">3</span>
+            </div>
+            
+            <a href="index.html" class="logout-btn" role="button" aria-label="Logout from admin panel">
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h2 class="dashboard-title">Dashboard</h2>
+        <p class="dashboard-subtitle">Welcome back! Here's your admin control center.</p>
+    </div>
+    
+    <!-- Quick Actions Section -->
+    <h3 class="section-heading">Quick Actions</h3>
+    <div class="cards-grid">
+        <!-- Verify NGOs Card -->
+        <a href="admin_ngos.html" class="action-card green-accent">
+            <div class="tooltip-text">Approve or reject pending NGOs</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">✅</div>
+                <div class="card-badge" aria-label="5 pending NGOs">5</div>
+            </div>
+            <h4 class="card-title">Verify NGOs</h4>
+            <p class="card-subtitle">Manage and approve organizations</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Review submitted NGO registrations and verify their details before approval.</p>
+            <p class="card-helper">Pending: 5 organizations awaiting verification</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+        
+        <!-- Manage Donors Card -->
+        <a href="admin_donors.html" class="action-card orange-accent">
+            <div class="tooltip-text">Track and manage all donors</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">👥</div>
+                <div class="card-badge" aria-label="1243 active donors">1.2K</div>
+            </div>
+            <h4 class="card-title">Manage Donors</h4>
+            <p class="card-subtitle">Track donor activity and engagement</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Monitor donor contributions, verify accounts, and manage donor relationships.</p>
+            <p class="card-helper">Active donors: 1,243 | Last updated: Today</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+        
+        <!-- NGO Performance Card -->
+        <a href="admin_performance.html" class="action-card blue-accent">
+            <div class="tooltip-text">View NGO performance metrics</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">📊</div>
+                <div class="card-badge" aria-label="12 active NGOs">12</div>
+            </div>
+            <h4 class="card-title">NGO Performance</h4>
+            <p class="card-subtitle">Meals served & efficiency metrics</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Analyze performance data, meal distribution metrics, and NGO efficiency ratings.</p>
+            <p class="card-helper">Average efficiency: 94.2% | Meals this month: 45,892</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+        
+        <!-- Donations Card -->
+        <a href="admin_donations.html" class="action-card green-accent">
+            <div class="tooltip-text">Track live donation activity</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">🍲</div>
+                <div class="card-badge" aria-label="127 today">127</div>
+            </div>
+            <h4 class="card-title">Donations</h4>
+            <p class="card-subtitle">Live donation tracking and analytics</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Monitor real-time donations, distribution status, and donation fulfillment progress.</p>
+            <p class="card-helper">Today's donations: 127 | Total this month: 8,432</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+        
+        <!-- NGO Queries Card -->
+        <a href="admin_queries.html" class="action-card red-accent">
+            <div class="tooltip-text">Resolve NGO support queries</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">📩</div>
+                <div class="card-badge" aria-label="8 open queries">8</div>
+            </div>
+            <h4 class="card-title">NGO Queries</h4>
+            <p class="card-subtitle">Support tickets and issues</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Address NGO inquiries, support requests, and technical issues with priority management.</p>
+            <p class="card-helper">Open tickets: 8 | Average response time: 2.5 hours</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+        
+        <!-- Reports Card -->
+        <a href="admin_reports.html" class="action-card blue-accent">
+            <div class="tooltip-text">Generate and view analytics</div>
+            <div class="card-top">
+                <div class="card-icon-wrapper">📈</div>
+                <div class="card-badge" aria-label="Last generated">📅</div>
+            </div>
+            <h4 class="card-title">Reports</h4>
+            <p class="card-subtitle">Analytics, logs & system data</p>
+            <div class="card-divider"></div>
+            <p class="card-description">Generate comprehensive reports, view system logs, and analyze historical data trends.</p>
+            <p class="card-helper">Last report: Generated today at 10:30 AM</p>
+            <div class="card-footer">
+                <span class="card-status">View Details</span>
+                <span class="card-arrow">→</span>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Analytics Overview Section -->
+    <h3 class="section-heading" style="margin-top: 3.5rem;">Analytics Overview</h3>
+    <div class="cards-grid" style="margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        <!-- Summary Stats as Cards -->
+        <div class="action-card green-accent" style="cursor: default; border-left: none; padding: 1.5rem; text-align: center;">
+            <div class="card-icon-wrapper" style="margin: 0 auto 1rem; width: 50px; height: 50px;">📋</div>
+            <div class="card-title" style="font-size: 2rem; color: var(--primary-green); margin-bottom: 0.25rem;">12</div>
+            <div class="card-subtitle" style="color: var(--text-light);">Active NGOs</div>
+        </div>
+        
+        <div class="action-card orange-accent" style="cursor: default; border-left: none; padding: 1.5rem; text-align: center;">
+            <div class="card-icon-wrapper" style="margin: 0 auto 1rem; width: 50px; height: 50px;">💰</div>
+            <div class="card-title" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 0.25rem;">1.2K</div>
+            <div class="card-subtitle" style="color: var(--text-light);">Active Donors</div>
+        </div>
+        
+        <div class="action-card blue-accent" style="cursor: default; border-left: none; padding: 1.5rem; text-align: center;">
+            <div class="card-icon-wrapper" style="margin: 0 auto 1rem; width: 50px; height: 50px;">🍽️</div>
+            <div class="card-title" style="font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.25rem;">45K</div>
+            <div class="card-subtitle" style="color: var(--text-light);">Meals Served</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Notification bell interaction
+    const notificationBell = document.querySelector('.notification-bell');
+    const badge = document.querySelector('.notification-badge');
+    
+    notificationBell.addEventListener('click', function() {
+        notificationBell.style.animation = 'none';
+        setTimeout(() => {
+            notificationBell.style.animation = '';
+        }, 10);
+    });
+    
+    notificationBell.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+        }
+    });
+    
+    // Smooth scroll for page load animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trigger entrance animations
+        const cards = document.querySelectorAll('.action-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '1';
+        });
+    });
+    
+    // Add keyboard navigation for cards
+    const actionCards = document.querySelectorAll('.action-card');
+    actionCards.forEach((card, index) => {
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                this.click();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

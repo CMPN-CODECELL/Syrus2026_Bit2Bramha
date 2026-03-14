@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Login | FEED</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Firebase Login Script -->
+    <script type="module" src="login.js" defer></script>
+
+    <style>
+        /* ============================================
+           ANIMATIONS & KEYFRAMES
+           ============================================ */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glassGlow {
+            0%, 100% {
+                box-shadow: 0 30px 80px rgba(46, 125, 50, 0.1),
+                            inset 0 0 50px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 35px 100px rgba(46, 125, 50, 0.15),
+                            inset 0 0 60px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        @keyframes buttonHoverGlow {
+            0% {
+                box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 15px 40px rgba(255, 152, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
+            }
+        }
+
+        @keyframes inputFocusGlow {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(46, 125, 50, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+            }
+        }
+
+        @keyframes pulseLoader {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% {
+                opacity: 0.75;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f6 100%);
+        }
+
+        /* ============================================
+           BACKGROUND ELEMENTS
+           ============================================ */
+
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(232, 245, 233, 0.8);
+            z-index: -1;
+            animation: backgroundShift 6s ease-in-out infinite;
+        }
+
+        /* ============================================
+           MAIN CONTAINER
+           ============================================ */
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* ============================================
+           GLASSMORPHISM CARD
+           ============================================ */
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 50px 40px;
+            max-width: 420px;
+            width: 100%;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(46, 125, 50, 0.1),
+                        inset 0 0 50px rgba(255, 255, 255, 0.5);
+            animation: glassGlow 4s ease-in-out infinite;
+            will-change: box-shadow;
+        }
+
+        /* ============================================
+           HEADER SECTION
+           ============================================ */
+
+        .logo {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .title {
+            color: #2e7d32;
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 8px;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #666;
+            font-weight: 400;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        /* ============================================
+           LOGIN TYPE TABS
+           ============================================ */
+
+        .login-type-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(224, 242, 224, 0.5);
+            padding: 5px;
+            border-radius: 12px;
+            animation: slideInLeft 0.6s ease-out 0.4s both;
+        }
+
+        .login-type-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: #2e7d32;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 14px;
+        }
+
+        .login-type-btn.active {
+            background: linear-gradient(45deg, #ff9800, #fb8c00);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .login-type-btn:hover:not(.active) {
+            background: rgba(46, 125, 50, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================
+           FORM SECTION
+           ============================================ */
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: slideInLeft 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.5s; }
+        .form-group:nth-child(2) { animation-delay: 0.6s; }
+        .form-group:nth-child(3) { animation-delay: 0.7s; }
+
+        .form-label {
+            display: block;
+            color: #2e7d32;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #2e7d32;
+            font-size: 18px;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px 12px 45px;
+            border: 2px solid #e0f2e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            font-size: 14px;
+            font-weight: 400;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        .form-control:focus {
+            border-color: #2e7d32;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+            padding-left: 45px;
+        }
+
+        .form-control:hover {
+            border-color: #2e7d32;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Password visibility toggle */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #2e7d32;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle:hover {
+            color: #ff9800;
+            transform: scale(1.1);
+        }
+
+        /* ============================================
+           CHECKBOX & REMEMBER ME
+           ============================================ */
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.6s ease-out 0.8s both;
+        }
+
+        .checkbox-custom {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #2e7d32;
+            border-radius: 6px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox-custom:hover {
+            border-color: #ff9800;
+            background: rgba(255, 152, 0, 0.05);
+        }
+
+        .checkbox-custom:checked {
+            background: linear-gradient(45deg, #ff9800, #fb8c00);
+            border-color: #ff9800;
+        }
+
+        .checkbox-custom:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .remember-label {
+            font-size: 13px;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            user-select: none;
+        }
+
+        .remember-label:hover {
+            color: #2e7d32;
+        }
+
+        /* ============================================
+           BUTTON SECTION
+           ============================================ */
+
+        .login-btn-wrapper {
+            margin-bottom: 20px;
+            animation: slideInLeft 0.6s ease-out 0.9s both;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #ff9800, #fb8c00);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 30px rgba(255, 152, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            will-change: transform, box-shadow;
+        }
+
+        .btn-login:hover:not(.loading) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 152, 0, 0.5);
+        }
+
+        .btn-login:active:not(.loading) {
+            transform: translateY(-1px);
+        }
+
+        /* Loading state */
+        .btn-login.loading {
+            background: linear-gradient(45deg, #fb8c00, #ff9800);
+            animation: buttonHoverGlow 1.5s ease-in-out infinite;
+        }
+
+        .btn-login.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .btn-login.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        /* ============================================
+           LINKS & FORGOT PASSWORD
+           ============================================ */
+
+        .links-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            animation: slideInLeft 0.6s ease-out 1s both;
+            font-size: 13px;
+        }
+
+        .forgot-password {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #ff9800;
+            text-decoration: underline;
+        }
+
+        .or-divider {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            font-weight: 400;
+            margin: 25px 0;
+            position: relative;
+            animation: fadeInUp 0.6s ease-out 1.1s both;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .or-divider::before {
+            left: 0;
+        }
+
+        .or-divider::after {
+            right: 0;
+        }
+
+        /* ============================================
+           ALTERNATE LOGIN LINKS
+           ============================================ */
+
+        .alternate-login {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.6s ease-out 1.2s both;
+        }
+
+        .alt-login-btn {
+            padding: 11px 16px;
+            border: 2px solid #e0f2e0;
+            background: transparent;
+            color: #2e7d32;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .alt-login-btn:hover {
+            background: rgba(46, 125, 50, 0.08);
+            border-color: #2e7d32;
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           REGISTER LINK
+           ============================================ */
+
+        .register-section {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            animation: fadeInUp 0.6s ease-out 1.3s both;
+        }
+
+        .register-text {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .register-link {
+            color: #ff9800;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: #2e7d32;
+        }
+
+        /* ============================================
+           TRUST SECTION
+           ============================================ */
+
+        .trust-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(224, 242, 224, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 18px;
+            border: 1px solid rgba(46, 125, 50, 0.1);
+            animation: fadeInUp 0.6s ease-out 1.4s both;
+        }
+
+        .trust-title {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .trust-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 13px;
+            color: #555;
+            animation: slideInLeft 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .trust-item:nth-child(1) { animation-delay: 1.5s; }
+        .trust-item:nth-child(2) { animation-delay: 1.6s; }
+        .trust-item:nth-child(3) { animation-delay: 1.7s; }
+
+        .trust-icon {
+            color: #ff9800;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 40px 25px;
+                max-width: 100%;
+                border-radius: 20px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .form-control {
+                font-size: 13px;
+                padding: 11px 12px 11px 40px;
+            }
+
+            .btn-login {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .alt-login-btn {
+                font-size: 12px;
+                padding: 10px 14px;
+            }
+
+            .login-type-btn {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+
+            .trust-section {
+                padding: 20px;
+                margin-top: 30px;
+            }
+
+            .trust-item {
+                font-size: 12px;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .logo {
+                font-size: 40px;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Background Video -->
+<video autoplay muted loop class="video-bg">
+    <source src="Generating_Animated_Image_Video.mp4" type="video/mp4">
+</video>
+
+<!-- Overlay -->
+<div class="overlay"></div>
+
+<!-- Main Container -->
+<div class="login-container">
+    <div class="login-card">
+        <!-- Logo & Header -->
+        <div class="text-center mb-5">
+            <div class="logo">🍽️</div>
+            <h1 class="title">NGO Login</h1>
+            <p class="subtitle">FEED & Hunger Relief</p>
+        </div>
+
+        <!-- Login Type Tabs (NGO / Admin) -->
+        <div class="login-type-container">
+            <button class="login-type-btn active" id="ngoLoginTab" onclick="switchLoginType('ngo')">
+                🏢 NGO
+            </button>
+            <button class="login-type-btn" id="adminLoginTab" onclick="switchLoginType('admin')">
+                🔐 Admin
+            </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <!-- Email Field -->
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">✉️</span>
+                    <input
+                        type="email"
+                        id="email"
+                        class="form-control"
+                        placeholder="your.email@example.com"
+                        required>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔒</span>
+                    <input
+                        type="password"
+                        id="password"
+                        class="form-control"
+                        placeholder="Enter your password"
+                        required>
+                    <button type="button" class="password-toggle" id="passwordToggle" onclick="togglePasswordVisibility()">
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="checkbox-wrapper">
+                <input
+                    type="checkbox"
+                    id="rememberMe"
+                    class="checkbox-custom">
+                <label for="rememberMe" class="remember-label">Remember me</label>
+            </div>
+
+            <!-- Login Button -->
+            <div class="login-btn-wrapper">
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span class="loading-spinner"></span>
+                    <span class="button-text">Login</span>
+                </button>
+            </div>
+
+            <!-- Links -->
+            <div class="links-container">
+                <a href="#forgot-password" class="forgot-password">Forgot Password?</a>
+            </div>
+        </form>
+
+        <!-- Or Divider -->
+        <div class="or-divider">or</div>
+
+        <!-- Alternate Login Options -->
+        <div class="alternate-login" id="alternateLoginContainer">
+            <a href="NGO_registration.html" class="alt-login-btn">📝 New NGO? Register Here</a>
+            <a href="admin_login.html" class="alt-login-btn">🔑 Admin Login</a>
+        </div>
+
+        <!-- Register Section -->
+        <div class="register-section">
+            <p class="register-text">
+                Not an NGO yet?
+                <a href="NGO_registration.html" class="register-link">Join our Network</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Trust / Info Section -->
+    <div class="trust-section">
+        <h3 class="trust-title">Why Join Our Platform?</h3>
+        <div class="trust-list">
+            <div class="trust-item">
+                <span class="trust-icon">🍲</span>
+                <span><strong>Donate Food:</strong> Connect with food donors instantly</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">♻️</span>
+                <span><strong>Reduce Waste:</strong> Help reduce food waste and environmental impact</span>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">❤️</span>
+                <span><strong>Help the Needy:</strong> Serve meals to underprivileged communities</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Interactions -->
+<script>
+    // ============================================
+    // PASSWORD VISIBILITY TOGGLE
+    // ============================================
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('passwordToggle');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.textContent = '👁️‍🗨️';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.textContent = '👁️';
+        }
+    }
+
+    // ============================================
+    // LOGIN TYPE SWITCHING
+    // ============================================
+    function switchLoginType(type) {
+        const ngoTab = document.getElementById('ngoLoginTab');
+        const adminTab = document.getElementById('adminLoginTab');
+        const alternateContainer = document.getElementById('alternateLoginContainer');
+
+        if (type === 'ngo') {
+            ngoTab.classList.add('active');
+            adminTab.classList.remove('active');
+            alternateContainer.innerHTML = `
+                <a href="NGO_registration.html" class="alt-login-btn">📝 New NGO? Register Here</a>
+                <a href="admin_login.html" class="alt-login-btn">🔑 Admin Login</a>
+            `;
+        } else if (type === 'admin') {
+            adminTab.classList.add('active');
+            ngoTab.classList.remove('active');
+            alternateContainer.innerHTML = `
+                <a href="admin_login.html" class="alt-login-btn">🔐 Admin Portal</a>
+                <a href="NGO_registration.html" class="alt-login-btn">📝 NGO Registration</a>
+            `;
+        }
+    }
+
+    // ============================================
+    // LOGIN HANDLER WITH LOADING STATE
+    // ============================================
+    function handleLogin(event) {
+        event.preventDefault();
+
+        const loginBtn = document.getElementById('loginBtn');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        // Add loading state
+        loginBtn.classList.add('loading');
+        loginBtn.disabled = true;
+
+        // Save remember me preference
+        if (rememberMe) {
+            localStorage.setItem('rememberMe', 'true');
+            localStorage.setItem('rememberedEmail', email);
+        } else {
+            localStorage.removeItem('rememberMe');
+            localStorage.removeItem('rememberedEmail');
+        }
+
+        // Call the Firebase login function (from login.js)
+        if (typeof login === 'function') {
+            login(email, password)
+                .then(() => {
+                    // Success - button state will be handled by redirect
+                })
+                .catch((error) => {
+                    // Error - remove loading state
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                    console.error('Login error:', error);
+                });
+        }
+    }
+
+    // ============================================
+    // RESTORE REMEMBERED EMAIL ON PAGE LOAD
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const rememberMe = localStorage.getItem('rememberMe') === 'true';
+        if (rememberMe) {
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            if (savedEmail) {
+                document.getElementById('email').value = savedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+        }
+    });
+
+    // ============================================
+    // PASSWORD FIELD FOCUS ANIMATIONS
+    // ============================================
+    document.getElementById('email').addEventListener('focus', function() {
+        this.style.animation = 'inputFocusGlow 0.6s ease-out';
+    });
+
+    document.getElementById('password').addEventListener('focus', function() {
+        this.style.animation = 'inputFocusGlow 0.6s ease-out';
+    });
+
+    // ============================================
+    // ENTER KEY SUPPORT
+    // ============================================
+    document.getElementById('password').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+    });
+</script>
+
+</body>
+</html>

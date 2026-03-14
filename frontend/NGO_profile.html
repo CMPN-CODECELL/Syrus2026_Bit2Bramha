@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard | FEED</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           ANIMATION KEYFRAMES
+           ============================================ */
+
+        /* Page load fade-in animation */
+        @keyframes fadeInPage {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Header slide down animation */
+        @keyframes slideDownHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main content slide-in from bottom */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Carousel fade animation */
+        @keyframes carouselFade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Carousel slide animation */
+        @keyframes carouselSlide {
+            from {
+                transform: translateX(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Card staggered animation */
+        @keyframes fadeUpStagger {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card hover scale animation */
+        @keyframes cardHoverLift {
+            to {
+                transform: translateY(-8px);
+                box-shadow: 0 35px 80px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* Button ripple effect */
+        @keyframes buttonRipple {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(255, 152, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 152, 0, 0);
+            }
+        }
+
+        /* Button glow effect */
+        @keyframes buttonGlow {
+            0%, 100% {
+                box-shadow: 0 8px 20px rgba(255, 152, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 30px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+        /* Alert slide-in animation */
+        @keyframes slideInAlert {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Alert pulse animation for warnings */
+        @keyframes alertPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        /* Progress bar fill animation */
+        @keyframes progressFill {
+            from {
+                width: 0%;
+            }
+            to {
+                width: var(--progress-value, 75%);
+            }
+        }
+
+        /* Section heading fade and underline */
+        @keyframes headingFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Subtle scale animation on card hover */
+        @keyframes scaleUp {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.02);
+            }
+        }
+
+        /* Dot pulse animation for carousel */
+        @keyframes dotPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* ============================================
+           GLOBAL STYLES & BASE ANIMATIONS
+           ============================================ */
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            animation: fadeInPage 0.6s ease-in-out;
+            min-height: 100vh;
+        }
+
+        /* Respect prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ============================================
+           HEADER STYLES
+           ============================================ */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            animation: slideDownHeader 0.6s ease-out;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .header-logo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(46, 125, 50, 0.3);
+        }
+
+        .header-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1b5e20;
+            letter-spacing: -0.5px;
+        }
+
+        .header-brand span {
+            color: #ff9800;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-nav a {
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s ease;
+            padding-bottom: 5px;
+        }
+
+        .header-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #2e7d32, #ff9800);
+            transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .header-nav a:hover {
+            color: #2e7d32;
+        }
+
+        .header-nav a:hover::after {
+            width: 100%;
+        }
+
+        .header-nav a.active {
+            color: #2e7d32;
+        }
+
+        .header-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-logout {
+            color: #d32f2f !important;
+        }
+
+        .header-logout:hover {
+            color: #b71c1c !important;
+        }
+
+        .header-menu-toggle {
+            display: none;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .header-menu-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        /* ============================================
+           CAROUSEL STYLES
+           ============================================ */
+
+        .carousel-container {
+            margin-top: 70px;
+            height: 400px;
+            position: relative;
+            background: white;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 70px 30px 30px 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.7s ease-out 0.2s backwards;
+        }
+
+        .carousel-slides {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e0e7ff 100%);
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            animation: carouselFade 0.8s ease-in-out;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .carousel-text {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: carouselSlide 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .carousel-subtext {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            max-width: 500px;
+            animation: carouselSlide 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s backwards;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            animation: dotPulse 0.6s ease-in-out;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .carousel-arrow:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-arrow.prev {
+            left: 20px;
+        }
+
+        .carousel-arrow.next {
+            right: 20px;
+        }
+
+        /* ============================================
+           MAIN CONTENT SECTION
+           ============================================ */
+
+        .main-wrapper {
+            display: flex;
+            margin-top: 0;
+        }
+
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            z-index: 900;
+            transition: background 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+            display: none;
+        }
+
+        .sidebar-backdrop.active {
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 1;
+            visibility: visible;
+            display: block;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            width: 280px;
+            background: linear-gradient(180deg, #e8f5e9, #ffffff);
+            padding: 25px;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 950;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+            box-shadow: 8px 0 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar h4 {
+            color: #2e7d32;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 25px;
+            animation: headingFadeIn 0.5s ease-in-out 0.1s both;
+        }
+
+        .sidebar h4:first-child {
+            margin-top: 0;
+            animation-delay: 0s;
+        }
+
+        /* Close button inside sidebar */
+        .sidebar-close-btn {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #2e7d32;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-close-btn:hover {
+            color: #ff9800;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* ============================================
+           NAVIGATION LINK ANIMATIONS
+           ============================================ */
+
+        .nav-link {
+            color: #2e7d32;
+            font-weight: 500;
+            margin: 8px 0;
+            border-radius: 10px;
+            padding: 12px 15px;
+            display: block;
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            background: none;
+            will-change: background, transform;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover glow effect */
+        .nav-link:hover {
+            background: #fff9c4;
+            transform: translateX(8px);
+            box-shadow: -4px 0 12px rgba(46, 125, 50, 0.15);
+        }
+
+        .nav-link.active,
+        .nav-link:focus {
+            background: linear-gradient(90deg, #ff9800, #fb8c00);
+            color: #fff;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .nav-link.logout {
+            color: #d32f2f;
+            margin-top: 30px;
+        }
+
+        .nav-link.logout:hover {
+            background: #ffebee;
+            color: #b71c1c;
+            box-shadow: -4px 0 12px rgba(211, 47, 47, 0.15);
+        }
+
+        /* ============================================
+           CONTENT & CARD ANIMATIONS
+           ============================================ */
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            animation: slideInUp 0.7s ease-in-out 0.3s backwards;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .card-box {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+            animation: fadeUpStagger 0.6s ease-in-out both;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Staggered animation for multiple cards */
+        .tab-pane:nth-child(1) .card-box {
+            animation-delay: 0.1s;
+        }
+
+        .tab-pane:nth-child(2) .card-box {
+            animation-delay: 0.2s;
+        }
+
+        .tab-pane:nth-child(3) .card-box {
+            animation-delay: 0.3s;
+        }
+
+        /* Card hover lift effect */
+        .card-box:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-body h4 {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .card-body p {
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           TEXT & HEADING ANIMATIONS
+           ============================================ */
+
+        .title {
+            color: #2e7d32;
+            font-weight: 700;
+            animation: headingFadeIn 0.5s ease-in-out;
+        }
+
+        .section-title {
+            color: #ff9800;
+            font-weight: 600;
+            margin-bottom: 15px;
+            margin-top: 25px;
+            animation: headingFadeIn 0.5s ease-in-out;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff9800, #fb8c00);
+            margin-top: 8px;
+            animation: slideInUp 0.6s ease-in-out 0.2s forwards;
+            border-radius: 2px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #2e7d32;
+            animation: fadeInPage 0.4s ease-in-out;
+        }
+
+        /* ============================================
+           BUTTON ANIMATIONS
+           ============================================ */
+
+        .btn {
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
+            position: relative;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #ff9800, #fb8c00);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px rgba(255, 152, 0, 0.25);
+        }
+
+        .btn-orange:hover {
+            box-shadow: 0 12px 30px rgba(255, 152, 0, 0.4);
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #fb8c00, #ff9800);
+        }
+
+        .btn-orange:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-success {
+            box-shadow: 0 8px 20px rgba(46, 167, 69, 0.2);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-danger {
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-danger:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-warning {
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-warning:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-info {
+            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.2);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-info:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* ============================================
+           ALERT & NOTIFICATION ANIMATIONS
+           ============================================ */
+
+        .list-group-item {
+            animation: slideInAlert 0.5s ease-out forwards;
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+        }
+
+        .list-group-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .list-group-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .list-group-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .list-group-item:hover {
+            background-color: rgba(255, 152, 0, 0.08);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .list-group-item-warning {
+            animation: alertPulse 3s ease-in-out infinite;
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+        }
+
+        /* ============================================
+           PROGRESS BAR ANIMATIONS
+           ============================================ */
+
+        .progress {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .progress-bar {
+            animation: progressFill 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: width 0.4s ease;
+            will-change: width;
+            border-radius: 10px;
+        }
+
+        .progress-bar:first-of-type {
+            animation-delay: 0.2s;
+        }
+
+        .progress-bar:nth-of-type(2) {
+            animation-delay: 0.4s;
+        }
+
+        .progress-bar:nth-of-type(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* ============================================
+           FORM ELEMENTS ANIMATIONS
+           ============================================ */
+
+        textarea, select {
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            animation: slideInAlert 0.5s ease-out;
+            border: 2px solid #e0e0e0;
+        }
+
+        textarea:focus, select:focus {
+            transform: scale(1.01);
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+            outline: none;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+
+        /* ============================================
+           FOOTER STYLES
+           ============================================ */
+
+        .footer {
+            background: white;
+            border-top: 2px solid #f0f0f0;
+            padding: 40px 30px;
+            margin-top: 60px;
+            animation: slideInUp 0.7s ease-out;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section {
+            animation: fadeUpStagger 0.6s ease-in-out both;
+        }
+
+        .footer-section:nth-child(1) { animation-delay: 0.1s; }
+        .footer-section:nth-child(2) { animation-delay: 0.15s; }
+        .footer-section:nth-child(3) { animation-delay: 0.2s; }
+
+        .footer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-links a:hover {
+            color: #2e7d32;
+            transform: translateX(5px);
+        }
+
+        .footer-contact {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .footer-contact strong {
+            color: #2e7d32;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #f0f0f0;
+            margin-top: 40px;
+            padding-top: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* ============================================
+           RESPONSIVE ANIMATIONS
+           ============================================ */
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .carousel-container {
+                height: 350px;
+                margin: 70px 20px 30px 20px;
+            }
+
+            .carousel-text {
+                font-size: 28px;
+            }
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .footer-content {
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+
+            .header-menu-toggle {
+                display: flex;
+            }
+
+            .header {
+                padding: 0 20px;
+            }
+
+            .carousel-container {
+                height: 300px;
+                margin: 70px 15px 30px 15px;
+                border-radius: 15px;
+            }
+
+            .carousel-text {
+                font-size: 24px;
+            }
+
+            .carousel-subtext {
+                font-size: 14px;
+            }
+
+            .carousel-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .carousel-arrow.prev {
+                left: 10px;
+            }
+
+            .carousel-arrow.next {
+                right: 10px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .card-box {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .sidebar {
+                width: 250px;
+            }
+
+            .sidebar-close-btn {
+                display: flex;
+            }
+
+            .nav-link {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+
+            .footer {
+                padding: 30px 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 20px;
+            }
+
+            .section-title {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 0 15px;
+                height: 60px;
+            }
+
+            .header-brand {
+                font-size: 16px;
+            }
+
+            .header-logo {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .carousel-container {
+                height: 250px;
+                margin: 60px 10px 30px 10px;
+                border-radius: 12px;
+            }
+
+            .carousel-text {
+                font-size: 20px;
+            }
+
+            .carousel-subtext {
+                font-size: 12px;
+            }
+
+            .carousel-controls {
+                bottom: 20px;
+                gap: 8px;
+            }
+
+            .carousel-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .carousel-arrow {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .content {
+                padding: 15px 10px;
+            }
+
+            .card-box {
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .sidebar {
+                width: 240px;
+                padding: 20px;
+            }
+
+            .sidebar h4 {
+                font-size: 16px;
+                margin-top: 20px;
+                margin-bottom: 15px;
+            }
+
+            .nav-link {
+                font-size: 13px;
+                padding: 8px 10px;
+            }
+
+            .title {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 14px;
+                margin-top: 15px;
+            }
+
+            .card {
+                border-radius: 12px;
+            }
+
+            .row {
+                flex-wrap: wrap;
+            }
+
+            .footer {
+                padding: 20px 15px;
+                margin-top: 40px;
+            }
+
+            .footer-content {
+                gap: 20px;
+            }
+
+            .footer-title {
+                font-size: 14px;
+            }
+
+            .footer-text,
+            .footer-links a,
+            .footer-contact {
+                font-size: 12px;
+            }
+        }
+
+        /* Scrollbar styling for sidebar and content */
+        .sidebar::-webkit-scrollbar,
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .content::-webkit-scrollbar-thumb {
+            background: #2e7d32;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover,
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #1b5e20;
+        }
+
+        /* Bootstrap grid utilities */
+        .row { display: flex; flex-wrap: wrap; margin-right: -12px; margin-left: -12px; }
+        .col-md-3 { flex: 0 0 calc(25% - 24px); margin: 12px; }
+        .d-flex { display: flex; }
+        .flex-wrap { flex-wrap: wrap; }
+        .gap-2 { gap: 12px; }
+        .gap-3 { gap: 16px; }
+        .mb-4 { margin-bottom: 24px; }
+        .mb-3 { margin-bottom: 16px; }
+        .mt-3 { margin-top: 16px; }
+        .mt-4 { margin-top: 24px; }
+        .me-2 { margin-right: 12px; }
+        .w-100 { width: 100%; }
+        .text-center { text-align: center; }
+        .shadow-sm { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .text-success { color: #28a745; }
+        .text-primary { color: #007bff; }
+        .text-warning { color: #ffc107; }
+        .text-info { color: #17a2b8; }
+        .bg-success { background-color: #28a745; }
+        .bg-info { background-color: #17a2b8; }
+        .nav { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin: 0; }
+        .flex-column { flex-direction: column; }
+        .form-select { width: 100%; padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; }
+        .form-control { width: 100%; padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-dialog { background: white; border-radius: 12px; max-width: 500px; animation: slideInUp 0.3s ease-out; }
+        .modal-content { border-radius: 12px; }
+        .modal-header { border-bottom: 1px solid #e0e0e0; padding: 20px; }
+        .modal-body { padding: 20px; }
+        .modal-footer { border-top: 1px solid #e0e0e0; padding: 20px; text-align: right; }
+        .modal-title { margin: 0; font-weight: 700; color: #2e7d32; }
+        .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #999; }
+        .btn-secondary { background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+        .d-flex.justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<!-- ============================================
+     MODERN HEADER
+     ============================================ -->
+<header class="header">
+    <div class="header-left">
+        <div class="header-logo">🍽️</div>
+        <div class="header-brand">Helping Hands<span> Foundation</span></div>
+    </div>
+    
+    <div class="header-right">
+        <nav>
+            <ul class="header-nav">
+                <li><a href="ngo_dashboard.html" onclick="setActiveNav(this)">Dashboard</a></li>
+                <li><a href="ngo_donations.html" onclick="setActiveNav(this)">Donations</a></li>
+                <li><a href="ngo_volunteers.html" onclick="setActiveNav(this)">Volunteers</a></li>
+                <li><a href="ngo_reports.html" onclick="setActiveNav(this)">Reports</a></li>
+                <li><a href="index.html" class="header-logout">Logout</a></li>
+            </ul>
+        </nav>
+        <button class="header-menu-toggle" id="headerMenuToggle">☰</button>
+    </div>
+</header>
+
+<!-- ============================================
+     HERO CAROUSEL
+     ============================================ -->
+<div class="carousel-container">
+    <div class="carousel-slides">
+        <!-- Slide 1 -->
+        <div class="carousel-slide active">
+            <img src="" alt="carousel image placeholder">
+            <div class="carousel-overlay">
+                <div class="carousel-text">Serving Communities</div>
+                <div class="carousel-subtext">Connecting donors with those in need through food donation network</div>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-slide">
+            <img src="" alt="carousel image placeholder">
+            <div class="carousel-overlay">
+                <div class="carousel-text">Reducing Food Waste</div>
+                <div class="carousel-subtext">Making a difference by preventing food waste and feeding families</div>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-slide">
+            <img src="" alt="carousel image placeholder">
+            <div class="carousel-overlay">
+                <div class="carousel-text">Helping Hands</div>
+                <div class="carousel-subtext">Join our mission to create a hunger-free community for everyone</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel Controls -->
+    <button class="carousel-arrow prev" id="carouselPrev">❮</button>
+    <button class="carousel-arrow next" id="carouselNext">❯</button>
+
+    <div class="carousel-controls">
+        <div class="carousel-dot active" data-slide="0"></div>
+        <div class="carousel-dot" data-slide="1"></div>
+        <div class="carousel-dot" data-slide="2"></div>
+    </div>
+</div>
+
+<!-- ============================================
+     MAIN LAYOUT
+     ============================================ -->
+<div class="main-wrapper">
+    <!-- Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <!-- Close button for mobile -->
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close navigation menu" title="Close menu">
+            ✕
+        </button>
+
+        <h4 class="mb-4">NGO Panel</h4>
+        <ul class="nav flex-column nav-pills" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#dashboard">Dashboard</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#profile">NGO Profile</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#capacity">Capacity & Volunteers</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#query">Raise Query</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#requests">Donation Requests</button>
+            </li>
+            <li class="nav-item mt-4">
+                <a href="index.html" class="nav-link logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="mainContent">
+        <div class="tab-content">
+
+            <!-- Dashboard -->
+            <div class="tab-pane fade show active" id="dashboard">
+                <div class="card-box">
+                    <h3 class="title">Welcome, Helping Hands Foundation</h3>
+                    <p class="mt-3">
+                        This dashboard allows you to manage your NGO profile, update food capacity,
+                        track volunteers, and raise issues directly to the admin.
+                    </p>
+
+                    <!-- Overview Statistics Cards -->
+                    <h5 class="section-title mt-4">Overview Statistics</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="text-success">1,250</h4>
+                                    <p class="mb-0">Meals Distributed</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="text-primary">15</h4>
+                                    <p class="mb-0">Active Donors</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="text-warning">3</h4>
+                                    <p class="mb-0">Pending Donations</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm">
+                                <div class="card-body">
+                                    <h4 class="text-info">25</h4>
+                                    <p class="mb-0">Available Volunteers</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <h5 class="section-title">Quick Actions</h5>
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <a href="update_capacity.html" class="btn btn-orange" style="text-decoration: none;">Update Capacity</a>
+                        <a href="view_donations.html" class="btn btn-success" style="text-decoration: none;">View Donations</a>
+                        <a href="raise_query.html" class="btn btn-warning" style="text-decoration: none;">Raise Query</a>
+                        <a href="contact_admin.html" class="btn btn-info" style="text-decoration: none;">Contact Admin</a>
+                    </div>
+
+                    <!-- Recent Activities/Notifications Feed -->
+                    <h5 class="section-title">Recent Activities</h5>
+                    <div class="list-group mb-4">
+                        <div class="list-group-item">
+                            <strong>New Donation:</strong> 50 meals from XYZ Restaurant scheduled for tomorrow.
+                        </div>
+                        <div class="list-group-item">
+                            <strong>Admin Update:</strong> Your capacity update has been approved.
+                        </div>
+                        <div class="list-group-item list-group-item-warning">
+                            <strong>Alert:</strong> Food shortage alert: Only 50 meals available.
+                        </div>
+                    </div>
+
+                    <!-- Performance Insights -->
+                    <h5 class="section-title">Performance Insights</h5>
+                    <div class="mb-3">
+                        <label>Monthly Meal Target Progress</label>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" style="width: 75%">75%</div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label>Donor Engagement Score</label>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" style="width: 85%">85%</div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Schedules/Reminders -->
+                    <h5 class="section-title">Upcoming Schedules</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">Food Pickup: XYZ Restaurant - Tomorrow, 10 AM</li>
+                        <li class="list-group-item">Volunteer Shift: 5 volunteers needed - Friday, 2 PM</li>
+                        <li class="list-group-item">Capacity Update Deadline: End of month</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="tab-pane fade" id="profile">
+                <div class="card-box">
+                    <h5 class="section-title">NGO Profile Details</h5>
+                    <p><span class="info-label">Registration No:</span> NGO-IND-45892</p>
+                    <p><span class="info-label">Contact Person:</span> Rahul Patil</p>
+                    <p><span class="info-label">Phone:</span> +91 9876543210</p>
+                    <p><span class="info-label">Email:</span> contact@helpinghands.org</p>
+                    <p><span class="info-label">Service Area:</span> Pune District</p>
+                </div>
+            </div>
+
+            <!-- Capacity -->
+            <div class="tab-pane fade" id="capacity">
+                <div class="card-box">
+                    <h5 class="section-title">Food & Volunteer Capacity</h5>
+                    <p><span class="info-label">Daily Food Capacity:</span> 100–300 meals</p>
+                    <p><span class="info-label">Available Volunteers:</span> 25</p>
+                    <p><span class="info-label">Vehicle Support:</span> Yes</p>
+                </div>
+            </div>
+
+            <!-- Query -->
+            <div class="tab-pane fade" id="query">
+                <div class="card-box">
+                    <h5 class="section-title">Raise an Issue</h5>
+                    <form onsubmit="submitQuery(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Issue Type</label>
+                            <select class="form-select" required>
+                                <option value="">Select</option>
+                                <option>Donation Issue</option>
+                                <option>Verification Issue</option>
+                                <option>Technical Issue</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Issue Description</label>
+                            <textarea class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <button class="btn btn-orange w-100">Send to Admin</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Donation Requests -->
+            <div class="tab-pane fade" id="requests">
+                <div class="card-box">
+                    <h5 class="section-title">Donation Requests from Donors</h5>
+                    <div class="list-group">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Request from: XYZ Restaurant</strong><br>
+                                <small>Submitted: 2 hours ago</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(1)">Accept</button>
+                                <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(1)">Reject</button>
+                                <button class="btn btn-info btn-sm" onclick="reviewRequest(1)">Review</button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Request from: ABC Hotel</strong><br>
+                                <small>Submitted: 5 hours ago</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(2)">Accept</button>
+                                <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(2)">Reject</button>
+                                <button class="btn btn-info btn-sm" onclick="reviewRequest(2)">Review</button>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Request from: Food Bank</strong><br>
+                                <small>Submitted: 1 day ago</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-success btn-sm me-2" onclick="acceptRequest(3)">Accept</button>
+                                <button class="btn btn-danger btn-sm me-2" onclick="rejectRequest(3)">Reject</button>
+                                <button class="btn btn-info btn-sm" onclick="reviewRequest(3)">Review</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     PROFESSIONAL FOOTER
+     ============================================ -->
+<footer class="footer">
+    <div class="footer-content">
+        <!-- About Section -->
+        <div class="footer-section">
+            <div class="footer-title">🍽️ Helping Hands Foundation</div>
+            <p class="footer-text">
+                Dedicated to reducing food waste and ensuring no one goes hungry. We connect food donors with communities in need through our innovative donation platform.
+            </p>
+        </div>
+
+        <!-- Quick Links Section -->
+        <div class="footer-section">
+            <div class="footer-title">Quick Links</div>
+            <ul class="footer-links">
+                <li><a href="#dashboard">📊 Dashboard</a></li>
+                <li><a href="#donations">🎁 Donations</a></li>
+                <li><a href="#query">❓ Raise Query</a></li>
+                <li><a href="contact_admin.html">📞 Contact Support</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="footer-section">
+            <div class="footer-title">Contact Information</div>
+            <div class="footer-contact">
+                <strong>Email:</strong> contact@helpinghands.org
+            </div>
+            <div class="footer-contact">
+                <strong>Phone:</strong> +91 9876 543 210
+            </div>
+            <div class="footer-contact">
+                <strong>Hours:</strong> Mon - Sat, 9 AM - 6 PM IST
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 Helping Hands Foundation. All rights reserved.
+    </div>
+</footer>
+
+<script>
+    // ============================================
+    // CAROUSEL FUNCTIONALITY
+    // ============================================
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const totalSlides = slides.length;
+
+    /**
+     * Show specific slide
+     */
+    function showSlide(index) {
+        // Remove active class from all slides and dots
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+
+        // Add active class to current slide and dot
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+    }
+
+    /**
+     * Next slide
+     */
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    /**
+     * Previous slide
+     */
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    // Auto-slide every 4 seconds
+    setInterval(nextSlide, 4000);
+
+    // Carousel arrow click handlers
+    document.getElementById('carouselNext').addEventListener('click', nextSlide);
+    document.getElementById('carouselPrev').addEventListener('click', prevSlide);
+
+    // Dot click handlers
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+        });
+    });
+
+    // ============================================
+    // HEADER NAVIGATION
+    // ============================================
+
+    function setActiveNav(element) {
+        // Remove active class from all nav links
+        document.querySelectorAll('.header-nav a').forEach(link => {
+            link.classList.remove('active');
+        });
+        // Add active class to clicked link
+        element.classList.add('active');
+    }
+
+    // ============================================
+    // SIDEBAR TOGGLE FUNCTIONALITY
+    // ============================================
+
+    const headerMenuToggle = document.getElementById('headerMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+    const mainContent = document.getElementById('mainContent');
+
+    /**
+     * Toggle sidebar open/closed state
+     */
+    function toggleSidebar() {
+        sidebar.classList.toggle('active');
+        sidebarBackdrop.classList.toggle('active');
+    }
+
+    /**
+     * Close sidebar
+     */
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        sidebarBackdrop.classList.remove('active');
+    }
+
+    /**
+     * Check if viewport is mobile/tablet (max 768px)
+     */
+    function isMobileView() {
+        return window.innerWidth <= 768;
+    }
+
+    // Open/close sidebar when menu button is clicked
+    if (headerMenuToggle) {
+        headerMenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSidebar();
+        });
+    }
+
+    // Close sidebar when close button is clicked (mobile)
+    sidebarCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeSidebar();
+    });
+
+    // Close sidebar when backdrop is clicked
+    sidebarBackdrop.addEventListener('click', () => {
+        closeSidebar();
+    });
+
+    // Close sidebar when clicking on main content area (mobile only)
+    mainContent.addEventListener('click', () => {
+        if (isMobileView() && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // Close sidebar when a menu item is clicked
+    const navLinks = document.querySelectorAll('.sidebar .nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeSidebar();
+        });
+    });
+
+    // Close sidebar when window is resized to desktop view
+    window.addEventListener('resize', () => {
+        if (!isMobileView() && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // Prevent sidebar from closing when clicking inside it
+    sidebar.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    // Close sidebar when pressing Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            closeSidebar();
+        }
+    });
+
+    // ============================================
+    // DASHBOARD FUNCTIONALITY
+    // ============================================
+
+    /**
+     * Handle query form submission
+     */
+    function submitQuery(e) {
+        e.preventDefault();
+        alert("Your issue has been successfully sent to the Admin.");
+    }
+
+    /**
+     * Accept a donation request
+     */
+    function acceptRequest(id) {
+        alert("Request " + id + " has been accepted.");
+    }
+
+    /**
+     * Reject a donation request
+     */
+    function rejectRequest(id) {
+        alert("Request " + id + " has been rejected.");
+    }
+
+    /**
+     * Review a donation request
+     */
+    function reviewRequest(id) {
+        const requests = {
+            1: { donor: "XYZ Restaurant", mealType: "Vegetarian Meals", quantity: "50 meals", expiry: "2026-01-16", notes: "Freshly prepared, ready for pickup." },
+            2: { donor: "ABC Hotel", mealType: "Non-Vegetarian Meals", quantity: "30 meals", expiry: "2026-01-17", notes: "Includes chicken and fish dishes." },
+            3: { donor: "Food Bank", mealType: "Mixed Meals", quantity: "100 meals", expiry: "2026-01-18", notes: "Assorted leftovers from events." }
+        };
+        const req = requests[id];
+        alert("Donor: " + req.donor + "\nMeal Type: " + req.mealType + "\nQuantity: " + req.quantity + "\nExpiry: " + req.expiry + "\nNotes: " + req.notes);
+    }
+
+    // Tab functionality for Bootstrap-like behavior
+    document.querySelectorAll('[data-bs-toggle="pill"]').forEach(button => {
+        button.addEventListener('click', function() {
+            const target = this.getAttribute('data-bs-target');
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            document.querySelector(target).classList.add('show', 'active');
+            
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+</script>
+
+</body>
+</html>

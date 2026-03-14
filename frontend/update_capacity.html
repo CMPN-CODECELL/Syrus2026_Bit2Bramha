@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Capacity | FEED</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes inputFocus {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.1);
+            }
+            100% {
+                box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+            }
+        }
+
+        @keyframes successSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes successPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        /* ============================================
+           CONTAINER & CARD
+           ============================================ */
+        .container {
+            max-width: 500px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Header */
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+            animation: slideInDown 0.6s ease-out 0.1s backwards;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            font-size: 14px;
+            color: #888;
+            font-weight: 400;
+        }
+
+        .icon-header {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: scaleIn 0.6s ease-out 0.2s backwards;
+        }
+
+        /* ============================================
+           FORM STYLES
+           ============================================ */
+        .form-group {
+            margin-bottom: 25px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.3s; }
+        .form-group:nth-child(3) { animation-delay: 0.4s; }
+        .form-group:nth-child(4) { animation-delay: 0.5s; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 10px;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-color: #f8f9fa;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2e7d32;
+            background-color: white;
+            animation: inputFocus 0.4s ease-out;
+        }
+
+        input[type="number"]::placeholder {
+            color: #bbb;
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232e7d32' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+
+        /* ============================================
+           BUTTON STYLES
+           ============================================ */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            animation: fadeInUp 0.6s ease-out 0.6s backwards;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.5);
+            background: linear-gradient(135deg, #1b5e20 0%, #0d3820 100%);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ============================================
+           SUCCESS MESSAGE
+           ============================================ */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+            z-index: 1000;
+            animation: successSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90%;
+        }
+
+        .success-message.show {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .success-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            animation: checkmark 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+        }
+
+        .success-text {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px;
+                border-radius: 16px;
+            }
+
+            .card-header h1 {
+                font-size: 24px;
+            }
+
+            .icon-header {
+                font-size: 40px;
+            }
+
+            .btn-submit {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .success-message {
+                left: 20px;
+                right: 20px;
+                transform: translateX(0);
+            }
+        }
+
+        /* ============================================
+           BACK BUTTON
+           ============================================ */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            animation: slideInDown 0.6s ease-out backwards;
+        }
+
+        .back-link:hover {
+            color: #1b5e20;
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="NGO_profile.html" class="back-link">Back to Dashboard</a>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-header">📦</div>
+                <h1>Update Capacity</h1>
+                <p>Manage your food storage capacity</p>
+            </div>
+
+            <form id="capacityForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label for="currentCapacity">Current Capacity (kg) *</label>
+                    <input 
+                        type="number" 
+                        id="currentCapacity" 
+                        name="currentCapacity" 
+                        placeholder="Enter current capacity"
+                        min="0"
+                        step="0.1"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="availableCapacity">Available Capacity (kg) *</label>
+                    <input 
+                        type="number" 
+                        id="availableCapacity" 
+                        name="availableCapacity" 
+                        placeholder="Enter available capacity"
+                        min="0"
+                        step="0.1"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="foodType">Food Type *</label>
+                    <select id="foodType" name="foodType" required>
+                        <option value="">Select food type</option>
+                        <option value="vegetarian">🥬 Vegetarian</option>
+                        <option value="non-vegetarian">🍗 Non-Vegetarian</option>
+                        <option value="both">🍽️ Both</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">Update Capacity</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <div class="success-text">Capacity updated successfully!</div>
+    </div>
+
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            const currentCapacity = document.getElementById('currentCapacity').value;
+            const availableCapacity = document.getElementById('availableCapacity').value;
+            const foodType = document.getElementById('foodType').value;
+
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+
+            // Reset form
+            document.getElementById('capacityForm').reset();
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+
+            // Optional: Log the data (in real app, send to server)
+            console.log({
+                currentCapacity,
+                availableCapacity,
+                foodType,
+                timestamp: new Date().toISOString()
+            });
+        }
+    </script>
+</body>
+</html>

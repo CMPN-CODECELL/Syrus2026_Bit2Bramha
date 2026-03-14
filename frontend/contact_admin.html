@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Admin | FEED</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes inputFocus {
+            0% {
+                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.1);
+            }
+            100% {
+                box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+            }
+        }
+
+        @keyframes successSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        /* ============================================
+           CONTAINER & HEADER
+           ============================================ */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            animation: slideInDown 0.6s ease-out backwards;
+        }
+
+        .back-link:hover {
+            color: #1b5e20;
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 45px;
+            animation: slideInDown 0.6s ease-out 0.1s backwards;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .icon-header {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: scaleIn 0.6s ease-out 0.2s backwards;
+        }
+
+        /* ============================================
+           CONTENT GRID
+           ============================================ */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* ============================================
+           CONTACT DETAILS CARDS
+           ============================================ */
+        .contact-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .contact-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: slideInDown 0.6s ease-out backwards;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .contact-card:nth-child(1) { animation-delay: 0.25s; }
+        .contact-card:nth-child(2) { animation-delay: 0.3s; }
+        .contact-card:nth-child(3) { animation-delay: 0.35s; }
+        .contact-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+            border-left-color: #ff9800;
+        }
+
+        .contact-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .contact-card:nth-child(2) .contact-icon {
+            animation-delay: 0.2s;
+        }
+
+        .contact-card:nth-child(3) .contact-icon {
+            animation-delay: 0.4s;
+        }
+
+        .contact-card:nth-child(4) .contact-icon {
+            animation-delay: 0.6s;
+        }
+
+        .contact-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .contact-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+
+        .contact-value a {
+            color: #2e7d32;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-value a:hover {
+            color: #ff9800;
+            text-decoration: underline;
+        }
+
+        .contact-description {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #4caf50;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* ============================================
+           CONTACT FORM
+           ============================================ */
+        .contact-form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 0.6s ease-out 0.3s backwards;
+        }
+
+        .form-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.35s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+        .form-group:nth-child(3) { animation-delay: 0.45s; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-color: #f8f9fa;
+        }
+
+        input[type="email"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+            background-color: white;
+            animation: inputFocus 0.4s ease-out;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.5;
+        }
+
+        /* ============================================
+           SUBMIT BUTTON
+           ============================================ */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            animation: fadeInUp 0.6s ease-out 0.5s backwards;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.5);
+            background: linear-gradient(135deg, #1b5e20 0%, #0d3820 100%);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* ============================================
+           SUCCESS MESSAGE
+           ============================================ */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+            z-index: 1000;
+            animation: successSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 90%;
+        }
+
+        .success-message.show {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .success-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            animation: checkmark 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+        }
+
+        .success-text {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1000px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .icon-header {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+
+            .page-header h1 {
+                font-size: 22px;
+            }
+
+            .icon-header {
+                font-size: 36px;
+            }
+
+            .contact-form-card {
+                padding: 20px;
+            }
+
+            .contact-details {
+                gap: 15px;
+            }
+
+            .contact-card {
+                padding: 18px;
+            }
+
+            .success-message {
+                left: 20px;
+                right: 20px;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="NGO_profile.html" class="back-link">Back to Dashboard</a>
+
+        <div class="page-header">
+            <div class="icon-header">📞</div>
+            <h1>Contact Admin</h1>
+            <p>Get support and assistance from our admin team</p>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left: Contact Details -->
+            <div class="contact-details">
+                <!-- Email Card -->
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <div class="contact-label">Email</div>
+                    <div class="contact-value">
+                        <a href="mailto:admin@feed.org">admin@feed.org</a>
+                    </div>
+                    <div class="contact-description">
+                        Send us an email and we'll respond within 24 hours
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        Active
+                    </div>
+                </div>
+
+                <!-- Phone Card -->
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-label">Phone</div>
+                    <div class="contact-value">
+                        <a href="tel:+919876543210">+91 9876 543 210</a>
+                    </div>
+                    <div class="contact-description">
+                        Available for urgent calls during business hours
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        Available
+                    </div>
+                </div>
+
+                <!-- Hours Card -->
+                <div class="contact-card">
+                    <div class="contact-icon">🕐</div>
+                    <div class="contact-label">Support Hours</div>
+                    <div class="contact-value">Mon - Sat, 9 AM - 6 PM</div>
+                    <div class="contact-description">
+                        IST (Indian Standard Time). Sunday: Emergency support only
+                    </div>
+                </div>
+
+                <!-- Address Card -->
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-label">Office Location</div>
+                    <div class="contact-value">FEED NGO</div>
+                    <div class="contact-description">
+                        Mumbai, Maharashtra, India
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Contact Form -->
+            <div class="contact-form-card">
+                <h2 class="form-card-title">Send us a Message</h2>
+
+                <form id="contactForm" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="your@email.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <input 
+                            type="text" 
+                            id="subject" 
+                            name="subject" 
+                            placeholder="Brief subject"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            placeholder="Tell us how we can help..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        <div class="success-icon">✓</div>
+        <div class="success-text">Message sent! We'll get back to you soon.</div>
+    </div>
+
+    <script>
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // Show success message
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+
+            // Reset form
+            document.getElementById('contactForm').reset();
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+
+            // Optional: Log the data (in real app, send to server)
+            console.log({
+                email,
+                subject,
+                message,
+                timestamp: new Date().toISOString()
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard | FEED</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .header-brand span {
+            color: #FF6B35;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-nav {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .header-nav a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            transition: width 0.3s ease;
+        }
+
+        .header-nav a:hover {
+            color: #FF6B35;
+        }
+
+        .header-nav a:hover::after,
+        .header-nav a.active::after {
+            width: 100%;
+        }
+
+        .header-nav a.active {
+            color: #FF6B35;
+            font-weight: 600;
+        }
+
+        .header-logout {
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .header-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .header-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #FF6B35, #F7931E);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .activity-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity-icon.donation {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .activity-icon.volunteer {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav {
+                display: none;
+            }
+
+            .header-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="header-logo">🍽️</div>
+            <div class="header-brand">Helping Hands<span> Foundation</span></div>
+        </div>
+
+        <div class="header-right">
+            <nav>
+                <ul class="header-nav">
+                    <li><a href="ngo_dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="ngo_donations.html">Donations</a></li>
+                    <li><a href="ngo_volunteers.html">Volunteers</a></li>
+                    <li><a href="ngo_reports.html">Reports</a></li>
+                    <li><a href="index.html" class="header-logout">Logout</a></li>
+                </ul>
+            </nav>
+            <button class="header-menu-toggle" id="headerMenuToggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">NGO Dashboard</h1>
+                <p class="dashboard-subtitle">Monitor your food donation activities and volunteer management</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <h3 class="chart-title">Donation Trends</h3>
+                    <div class="chart-placeholder">
+                        📊 Chart visualization would go here
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">Volunteer Activity</h3>
+                    <div class="chart-placeholder">
+                        📈 Activity chart would go here
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h3 class="activity-title">Recent Activity</h3>
+                <ul class="activity-list" id="activityList">
+                    <!-- Activity items will be populated by JavaScript -->
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="ngo_data.js"></script>
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadRecentActivity();
+        });
+
+        function loadDashboardStats() {
+            const data = ngoDataManager.getData();
+            const statsGrid = document.getElementById('statsGrid');
+
+            const stats = [
+                {
+                    icon: '📦',
+                    value: data.donations.totalReceived,
+                    label: 'Total Donations',
+                    change: '+12%',
+                    changeType: 'positive'
+                },
+                {
+                    icon: '✅',
+                    value: data.donations.completed,
+                    label: 'Completed',
+                    change: '+8%',
+                    changeType: 'positive'
+                },
+                {
+                    icon: '⏳',
+                    value: data.donations.pending,
+                    label: 'Pending',
+                    change: '-5%',
+                    changeType: 'negative'
+                },
+                {
+                    icon: '👥',
+                    value: data.volunteers.total,
+                    label: 'Volunteers',
+                    change: '+15%',
+                    changeType: 'positive'
+                },
+                {
+                    icon: '🎯',
+                    value: data.volunteers.active,
+                    label: 'Active Volunteers',
+                    change: '+10%',
+                    changeType: 'positive'
+                },
+                {
+                    icon: '🍽️',
+                    value: data.reports.performance.totalMealsDistributed,
+                    label: 'Meals Distributed',
+                    change: '+20%',
+                    changeType: 'positive'
+                }
+            ];
+
+            statsGrid.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="stat-icon">${stat.icon}</div>
+                    <div class="stat-value">${stat.value}</div>
+                    <div class="stat-label">${stat.label}</div>
+                    <div class="stat-change ${stat.changeType}">${stat.change} from last month</div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentActivity() {
+            const recentDonations = ngoDataManager.getRecentDonations(5);
+            const activityList = document.getElementById('activityList');
+
+            const activities = recentDonations.map(donation => ({
+                icon: 'donation',
+                text: `New donation from ${donation.donorName} - ${donation.foodType}`,
+                time: formatTimeAgo(new Date(donation.timestamp)),
+                type: 'donation'
+            }));
+
+            // Add some volunteer activities
+            const activeVolunteers = ngoDataManager.getActiveVolunteers();
+            if (activeVolunteers.length > 0) {
+                activities.push({
+                    icon: 'volunteer',
+                    text: `${activeVolunteers.length} volunteers are currently active`,
+                    time: 'Today',
+                    type: 'volunteer'
+                });
+            }
+
+            activityList.innerHTML = activities.slice(0, 5).map(activity => `
+                <li class="activity-item">
+                    <div class="activity-icon ${activity.icon}">
+                        ${activity.icon === 'donation' ? '📦' : '👥'}
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">${activity.text}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+
+            if (diffInHours < 1) return 'Just now';
+            if (diffInHours < 24) return `${diffInHours} hours ago`;
+            const diffInDays = Math.floor(diffInHours / 24);
+            return `${diffInDays} days ago`;
+        }
+    </script>
+</body>
+</html>

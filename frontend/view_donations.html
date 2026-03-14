@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Donations | FEED</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================
+           GLOBAL STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rowHoverLift {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ============================================
+           CONTAINER & HEADER
+           ============================================ */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 25px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            animation: slideInDown 0.6s ease-out backwards;
+        }
+
+        .back-link:hover {
+            color: #1b5e20;
+            transform: translateX(-5px);
+        }
+
+        .back-link::before {
+            content: "← ";
+            margin-right: 5px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideInDown 0.6s ease-out 0.1s backwards;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1b5e20;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .icon-header {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: scaleIn 0.6s ease-out 0.2s backwards;
+        }
+
+        /* ============================================
+           TABLE CARD
+           ============================================ */
+        .table-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: rowHoverLift 0.5s ease-out backwards;
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.3s; }
+        tbody tr:nth-child(2) { animation-delay: 0.35s; }
+        tbody tr:nth-child(3) { animation-delay: 0.4s; }
+        tbody tr:nth-child(4) { animation-delay: 0.45s; }
+        tbody tr:nth-child(5) { animation-delay: 0.5s; }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+            box-shadow: inset 3px 0 0 #2e7d32;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+        }
+
+        .status-received {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-distributed {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        tbody tr:hover .status-badge {
+            transform: scale(1.05);
+        }
+
+        /* ============================================
+           EMPTY STATE
+           ============================================ */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .empty-state.show {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* ============================================
+           STATS
+           ============================================ */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out 0.15s backwards;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: scaleIn 0.6s ease-out backwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.15s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.25s; }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .icon-header {
+                font-size: 40px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+
+            th {
+                font-size: 11px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .table-wrapper {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0;
+            }
+
+            .page-header h1 {
+                font-size: 20px;
+            }
+
+            .icon-header {
+                font-size: 36px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="NGO_profile.html" class="back-link">Back to Dashboard</a>
+
+        <div class="page-header">
+            <div class="icon-header">📊</div>
+            <h1>View Donations</h1>
+            <p>Track all food donations received by your NGO</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value">24</div>
+                <div class="stat-label">Total Donations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">480</div>
+                <div class="stat-label">Total Quantity (kg)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">18</div>
+                <div class="stat-label">Active Donors</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table id="donationsTable">
+                    <thead>
+                        <tr>
+                            <th>Donor Name</th>
+                            <th>Food Type</th>
+                            <th>Quantity (kg)</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Sample data -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🛒</div>
+                <h2>No donations yet</h2>
+                <p>Donations from donors will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample donation data
+        const donations = [
+            {
+                donorName: "Fresh Farms Co.",
+                foodType: "Vegetarian",
+                quantity: 50,
+                date: "2024-01-20",
+                status: "received"
+            },
+            {
+                donorName: "City Bakery",
+                foodType: "Vegetarian",
+                quantity: 30,
+                date: "2024-01-19",
+                status: "distributed"
+            },
+            {
+                donorName: "Premium Meats Ltd.",
+                foodType: "Non-Vegetarian",
+                quantity: 45,
+                date: "2024-01-18",
+                status: "received"
+            },
+            {
+                donorName: "Organic Foods Inc.",
+                foodType: "Both",
+                quantity: 60,
+                date: "2024-01-17",
+                status: "received"
+            },
+            {
+                donorName: "Local Restaurant",
+                foodType: "Non-Vegetarian",
+                quantity: 35,
+                date: "2024-01-16",
+                status: "pending"
+            }
+        ];
+
+        // Initialize table
+        function initializeTable() {
+            const tableBody = document.getElementById('tableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (donations.length === 0) {
+                emptyState.classList.add('show');
+                return;
+            }
+
+            donations.forEach(donation => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${donation.status}`;
+                
+                row.innerHTML = `
+                    <td>${donation.donorName}</td>
+                    <td>${donation.foodType}</td>
+                    <td>${donation.quantity} kg</td>
+                    <td>${new Date(donation.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                    <td><span class="status-badge ${statusClass}">${donation.status}</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Call on page load
+        document.addEventListener('DOMContentLoaded', initializeTable);
+    </script>
+</body>
+</html>

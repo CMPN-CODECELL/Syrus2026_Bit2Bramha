@@ -8,6 +8,13 @@
 **FEED** is a web-based platform built to bridge the gap between food donors and NGOs. It provides a seamless experience for NGOs to register, manage donations, track volunteers, and communicate with admins — all through a clean and responsive interface.
 
 ---
+## 📊 Presentation
+
+[![View Presentation](https://img.shields.io/badge/View-Presentation-orange?style=for-the-badge&logo=microsoftpowerpoint)](https://docs.google.com/presentation/d/1wlqVysDjTE7-xfniHDe80MDvzESUUVgQ/edit?usp=drive_link&ouid=107973093000887670926&rtpof=true&sd=true)
+
+## 🎬 Demo Video
+
+[![Watch Demo](https://img.shields.io/badge/Watch-Demo%20Video-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1nyBAwFANm4Kzz_mIdzTRNPOw7LkZWKVg/view?usp=drive_link)
 
 ## ✨ Features
 

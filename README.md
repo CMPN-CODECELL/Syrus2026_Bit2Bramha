@@ -87,7 +87,9 @@ Password : admin@123
 
 ---
 
-## 👥 Team
+## 👥 Team 
+
+Team Name : Bit2Bramha
 
 | Name | Role |
 |------|------|
